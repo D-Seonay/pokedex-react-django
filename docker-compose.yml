@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./pokedex_backend
+    container_name: pokedex-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./pokedex_backend:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    build: ./pokedex-frontend
+    container_name: pokedex-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
