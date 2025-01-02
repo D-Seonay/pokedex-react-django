@@ -66,7 +66,7 @@ const PokemonDetail = () => {
 
                 {/* Sprite avec effet blur */}
                 <div className="relative flex justify-center mb-6">
-                    <div className="absolute inset-0 w-36 h-36 bg-gray-700 blur-xl rounded-full animate-pulse" />
+                    <div className="absolute inset-0 w-36 h-36 bg-gray-700 blur-xl rounded-full animate-pulse left-[150px]" />
                     <img
                         src={pokemon.sprite}
                         alt={pokemon.name}
