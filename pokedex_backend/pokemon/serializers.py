@@ -1,4 +1,7 @@
 from rest_framework import serializers
-class PokemonSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100)
-    url = serializers.URLField()
+from .models import Pokemon
+
+class PokemonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pokemon
+        fields = '__all__'  # Cela inclura tous les champs de ton modèle

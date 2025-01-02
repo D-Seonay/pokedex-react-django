@@ -1,12 +1,22 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import requests
+from .models import Pokemon
 from .serializers import PokemonSerializer
 
-class PokemonList(APIView):
-    def get(self, request):
-        response = requests.get('https://pokeapi.co/api/v2/pokemon?limit=151')
-        data = response.json()
-        return Response(data['results'])
+class PokemonListView(APIView):
+    def get(self, request, id=None):
+        if id:
+            # Récupérer un Pokémon par son ID
+            pokemon = Pokemon.objects.get(pk=id)
+            # Sérialiser les données
+            serializer = PokemonSerializer(pokemon)
+            # Renvoyer les données sérialisées sous forme de JSON
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Récupérer tous les Pokémon de la base de données
+            pokemons = Pokemon.objects.all()
+            # Sérialiser les données
+            serializer = PokemonSerializer(pokemons, many=True)
+            # Renvoyer les données sérialisées sous forme de JSON
+            return Response(serializer.data, status=status.HTTP_200_OK)
