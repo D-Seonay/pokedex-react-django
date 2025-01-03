@@ -46,10 +46,14 @@ const PokemonDetail = () => {
 
     const renderStatBar = (value, color) => (
         <div className="w-full bg-gray-700 rounded-full h-3 mb-1">
-            <div
-                className={`h-3 rounded-full ${color} transition-all duration-1000`}
+            <motion.div
+                className={`h-3 rounded-full ${color} transition-all`}
                 style={{ width: statAnimation ? `${(value / 255) * 100}%` : '0%' }}
-            ></div>
+                animate={{
+                    width: statAnimation ? `${(value / 255) * 100}%` : '0%',
+                }}
+                transition={{ duration: 1 }}
+            />
         </div>
     );
 
@@ -64,15 +68,17 @@ const PokemonDetail = () => {
     };
 
     const navigateToNextPokemon = () => {
-        // Logique pour naviguer vers le prochain Pokémon
         const nextId = parseInt(id) + 1;
-        window.location.href = `/${nextId}`;
+        if (nextId <= 151) {
+            window.location.href = `/${nextId}`;
+        }
     };
 
     const navigateToPrevPokemon = () => {
-        // Logique pour naviguer vers le Pokémon précédent
         const prevId = parseInt(id) - 1;
-        window.location.href = `/${prevId}`;
+        if (prevId >= 1) {
+            window.location.href = `/${prevId}`;
+        }
     };
 
     return (
@@ -91,12 +97,14 @@ const PokemonDetail = () => {
                     <button
                         onClick={navigateToPrevPokemon}
                         className="p-2 rounded-md text-white hover:bg-gray-700"
+                        disabled={parseInt(id) <= 1} // Désactiver bouton "Précédent" si id <= 1
                     >
                         <FaArrowLeft />
                     </button>
                     <button
                         onClick={navigateToNextPokemon}
                         className="p-2 rounded-md text-white hover:bg-gray-700"
+                        disabled={parseInt(id) >= 151} // Désactiver bouton "Suivant" si id >= 151
                     >
                         <FaArrowRight />
                     </button>
@@ -109,23 +117,34 @@ const PokemonDetail = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <div className="absolute inset-0 w-36 h-36 bg-gray-500 blur-xl rounded-full animate-pulse left-[150px]" />
-                    <img
+                    <div
+                        className="absolute inset-0 w-36 h-36 bg-gray-500 blur-xl rounded-full animate-pulse left-[150px]"
+                        animate={{
+                            opacity: spriteType === 'shiny' ? 1 : 0,
+                        }}
+                        transition={{ duration: 0.5 }}
+                    />
+                    <motion.img
                         src={getSprite()}
                         alt={pokemon.name}
                         className="relative z-10 w-36 h-36"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
                     />
                 </motion.div>
 
                 {/* Type de sprite */}
                 <div className="flex justify-center mb-6 space-x-4">
-                    <button
+                    <motion.button
                         className={`px-4 py-2 rounded-md ${spriteType === 'normal' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
                         onClick={() => setSpriteType('normal')}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
                     >
                         <FaCircle className="inline-block mr-2" />
                         Normal
-                    </button>
+                    </motion.button>
                     <button
                         className={`px-4 py-2 rounded-md ${spriteType === 'shiny' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
                         onClick={() => setSpriteType('shiny')}
@@ -143,8 +162,16 @@ const PokemonDetail = () => {
                 </div>
 
                 {/* Pokémon Info */}
-                <h2 className="text-3xl font-bold text-center">{pokemon.name}</h2>
-                <p className="text-center text-gray-400">{pokemon.types}</p>
+                <motion.div
+                    key={pokemon.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1 }}
+                >
+                    <h2 className="text-3xl font-bold text-center">{pokemon.name}</h2>
+                    <p className="text-center text-gray-400">{pokemon.types}</p>
+                </motion.div>
 
                 {/* Stats */}
                 {activeTab === 'about' && (
@@ -244,7 +271,6 @@ const PokemonDetail = () => {
                             {pokemon.evolutions && pokemon.evolutions.length > 0 ? (
                                 <div className="space-y-4 flex flex-col">
                                     {pokemon.evolutions.map((evolution, index) => {
-                                        // Vérifie si l'ID de l'évolution correspond à l'URL actuelle
                                         const isActive = location.pathname === `/${evolution.id}`;
                                         return (
                                             <Link 
@@ -273,17 +299,10 @@ const PokemonDetail = () => {
                             <p className="text-gray-300">Base Experience: {pokemon.base_experience}</p>
                             <p className="text-gray-300">Capture Rate: {pokemon.capture_rate}</p>
                             <p className="text-gray-300">Habitat: {pokemon.habitat}</p>
-                            <p className="text-gray-300">Abilities: {pokemon.abilities}</p>
+                            <p className="text-gray-300">Weight: {pokemon.weight}</p>
+                            <p className="text-gray-300">Height: {pokemon.height}</p>
                         </div>
                     )}
-                </div>
-
-                {/* Audio */}
-                <div className="mt-6 text-center">
-                    <audio controls>
-                        <source src={pokemon.cry_url} type="audio/ogg" />
-                        Your browser does not support the audio element.
-                    </audio>
                 </div>
             </div>
         </div>
