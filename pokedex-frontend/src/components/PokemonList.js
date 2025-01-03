@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import LogoutButton from './Logout';
 
 const PokemonList = () => {
     const [pokemons, setPokemons] = useState([]);
@@ -25,6 +26,7 @@ const PokemonList = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white font-sans p-6">
             <h1 className="text-4xl font-bold text-center mb-10">Pokédex</h1>
+            <LogoutButton />
 
             {/* Barre de recherche */}
             <div className="mb-8 flex justify-center">

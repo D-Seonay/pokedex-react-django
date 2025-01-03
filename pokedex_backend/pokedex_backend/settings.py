@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',  # Ajoute cette ligne si elle n'existe pas
     'pokemon',
+    'accounts',
 ]
 
 MIDDLEWARE = [
