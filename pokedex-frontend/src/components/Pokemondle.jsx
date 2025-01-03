@@ -20,12 +20,14 @@ const PokemonGame = () => {
 
     const handleGuess = (guess) => {
         const pokemon = pokemons.find(pokemon => pokemon.name.toLowerCase() === guess.toLowerCase());
-        if (pokemon) {
+        if (pokemon && !guesses.some(guess => guess.pokemon.name.toLowerCase() === pokemon.name.toLowerCase())) {
             const similarityScore = calculateSimilarity(pokemon);
             setSimilarity(similarityScore);
 
             // Ajouter la tentative à l'historique des tentatives avec toutes les données du Pokémon
             setGuesses([...guesses, { pokemon, similarity: similarityScore }]);
+        } else {
+            alert("Ce Pokémon a déjà été deviné !");
         }
     };
 
@@ -76,7 +78,10 @@ const PokemonGame = () => {
         return guesses.map((guess, index) => {
             return (
                 <tr key={index}>
-                    <td className="p-2">{guess.pokemon.name}</td>
+                    <td className="p-2 flex items-center">
+                        <img src={guess.pokemon.sprite} alt={guess.pokemon.name} className="w-8 h-8 mr-2" />
+                        {guess.pokemon.name}
+                    </td>
                     <td className="p-2">{guess.pokemon.height}</td>
                     <td className="p-2">{guess.pokemon.weight}</td>
                     <td className="p-2">{guess.pokemon.types}</td>
