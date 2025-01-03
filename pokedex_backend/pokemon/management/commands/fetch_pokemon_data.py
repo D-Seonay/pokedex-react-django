@@ -33,7 +33,7 @@ class Command(BaseCommand):
             flavor_texts = species['flavor_text_entries']
             description = next(
                 (entry['flavor_text'].replace("\n", " ").replace("\f", " ")
-                 for entry in flavor_texts if entry['language']['name'] == 'en'),
+                    for entry in flavor_texts if entry['language']['name'] == 'en'),
                 "No description available."
             )
 
@@ -68,7 +68,10 @@ class Command(BaseCommand):
                     'base_experience': base_experience,
                     'capture_rate': capture_rate,
                     'habitat': habitat,
-                    'forms': ", ".join(form['name'] for form in details['forms'])
+                    'forms': ", ".join(form['name'] for form in details['forms']),
+                    'chromatique_sprite': details['sprites']['front_shiny'],
+                    'animated_front_sprite': details['sprites']['other']['showdown']['front_default'],
+                    'animated_back_sprite': details['sprites']['other']['showdown']['back_default']
                 }
             )
 
