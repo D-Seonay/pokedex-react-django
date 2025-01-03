@@ -8,6 +8,9 @@ const Login = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    const refreshPage = () => {
+        window.location.reload();
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -21,6 +24,7 @@ const Login = () => {
             localStorage.setItem("token", token); // Stocke le token dans le localStorage
             localStorage.setItem("authToken", token); // Stocke le token dans le localStorage
             navigate("/"); // Redirige vers la page d'accueil
+            refreshPage();
         } catch (err) {
             setError("Invalid credentials. Please try again.");
             console.error(err);
