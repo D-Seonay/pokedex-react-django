@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-6">
-      <div className="max-w-screen-xl mx-auto flex justify-between items-center">
+      <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row justify-between items-center">
         {/* Section des liens */}
-        <div className="flex space-x-6">
+        <div className="flex flex-col sm:flex-row space-x-0 sm:space-x-6 mb-4 sm:mb-0">
           <Link to="/" className="hover:text-yellow-500 transition-all duration-300">Home</Link>
           <Link to="/about" className="hover:text-yellow-500 transition-all duration-300">About</Link>
           <Link to="/pokemons" className="hover:text-yellow-500 transition-all duration-300">Pokémon</Link>
