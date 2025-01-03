@@ -1,12 +1,16 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-    // Vérifie si l'utilisateur est authentifié (par exemple, via un token stocké)
+    const location = useLocation();
     const isAuthenticated = !!localStorage.getItem("authToken");
 
-    // Si l'utilisateur n'est pas authentifié, redirige vers la page de connexion
-    return isAuthenticated ? children : <Navigate to="/login" />;
+    // Si l'utilisateur n'est pas authentifié et essaie d'accéder à une page autre que /register, redirige vers la page de connexion
+    if (!isAuthenticated && location.pathname !== "/register") {
+        return <Navigate to="/login" />;
+    }
+
+    return children;
 };
 
 export default PrivateRoute;

@@ -5,10 +5,15 @@ import PokemonDetail from './components/PokemonDetail';
 import Register from './components/Register';
 import Login from './components/Login';
 import PrivateRoute from './components/PrivateRoute';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 const App = () => {
     return (
         <Router>
+            <PrivateRoute>
+                <Navbar />
+            </PrivateRoute>
             <Routes>
 
                 <Route path="/" element={
@@ -24,6 +29,9 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
             </Routes>
+            <PrivateRoute>
+                <Footer />
+            </PrivateRoute>
         </Router>
     );
 };
