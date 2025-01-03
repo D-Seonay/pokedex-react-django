@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import LogoutButton from './Logout';
+import { FiSearch } from 'react-icons/fi'; // Icône de recherche
+import { FaCircle, FaStar } from 'react-icons/fa'; // Icônes de type et de mode shiny
+
 
 const PokemonList = () => {
     const [pokemons, setPokemons] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    
+    const [isShiny, setIsShiny] = useState(false);  // Ajout d'état pour gérer l'affichage shiny
+
     useEffect(() => {
         axios
             .get('http://127.0.0.1:8000/api/pokemons/')
@@ -23,19 +26,35 @@ const PokemonList = () => {
         return nameMatch || typeMatch || numberMatch;
     });
 
+    // Fonction pour obtenir le sprite en fonction du mode (normal ou shiny)
+    const getSprite = (pokemon) => {
+        return isShiny ? pokemon.chromatique_sprite : pokemon.sprite;
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white font-sans p-6">
             <h1 className="text-4xl font-bold text-center mb-10">Pokédex</h1>
 
-            {/* Barre de recherche */}
-            <div className="mb-8 flex justify-center">
-                <input
-                    type="text"
-                    placeholder="Rechercher un Pokémon..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-2/3 sm:w-1/2 md:w-1/3 p-2 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+            {/* Barre de recherche avec icône */}
+            <div className="mb-8 flex justify-center items-center space-x-4">
+                <div className="relative w-2/3 sm:w-1/2 md:w-1/3">
+                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    <input
+                        type="text"
+                        placeholder="Rechercher un Pokémon..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 p-2 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                
+                {/* Bouton pour activer/désactiver le mode shiny avec icône */}
+                <button
+                    onClick={() => setIsShiny(!isShiny)}
+                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary focus:outline-none flex items-center space-x-2"
+                >
+                    {isShiny ? <FaCircle /> : <FaStar />}
+                </button>
             </div>
 
             {/* Grid des cartes */}
@@ -52,7 +71,7 @@ const PokemonList = () => {
                                 {/* Sprite */}
                                 <div className="flex justify-center">
                                     <img
-                                        src={pokemon.sprite}
+                                        src={getSprite(pokemon)}  // Affichage du sprite en fonction du mode
                                         alt={pokemon.name}
                                         className="w-20 h-20 mb-3"
                                     />
