@@ -2,19 +2,23 @@ version: '3.8'
 
 services:
   backend:
-    build: ./pokedex_backend
-    container_name: pokedex-backend
+    build:
+      context: ./pokedex_backend
+    container_name: backend
     ports:
       - "8000:8000"
-    volumes:
-      - ./pokedex_backend:/app
-    environment:
-      - PYTHONUNBUFFERED=1
+    networks:
+      - app-network
 
   frontend:
-    build: ./pokedex-frontend
-    container_name: pokedex-frontend
+    build:
+      context: ./pokedex-frontend
+    container_name: frontend
     ports:
       - "3000:3000"
-    depends_on:
-      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
