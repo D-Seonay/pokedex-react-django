@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { FaCircle, FaStar, FaRegPlayCircle } from 'react-icons/fa';
-
+import { FaCircle, FaStar, FaRegPlayCircle, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const PokemonDetail = () => {
     const { id } = useParams();
     const [pokemon, setPokemon] = useState(null);
     const [statAnimation, setStatAnimation] = useState(false);
-    const [activeTab, setActiveTab] = useState('about'); // Onglet actif
-    const [spriteType, setSpriteType] = useState('normal'); // Type de sprite
-    const location = useLocation(); // Hook pour récupérer l'URL actuelle
+    const [activeTab, setActiveTab] = useState('about');
+    const [spriteType, setSpriteType] = useState('normal');
+    const location = useLocation();
 
     useEffect(() => {
         axios
             .get(`http://127.0.0.1:8000/api/pokemons/${id}/`)
             .then((response) => {
                 const data = response.data;
-                console.log(data);
-                
-                // Convertir les chaînes JSON en tableaux ou objets
                 let moves = [];
                 let evolutions = [];
                 try {
@@ -28,16 +25,16 @@ const PokemonDetail = () => {
                 } catch (e) {
                     console.error('Invalid JSON for moves:', e);
                 }
-    
+
                 try {
                     const evolutionsString = data.evolutions.replace(/'/g, '"');
                     evolutions = JSON.parse(evolutionsString);
                 } catch (e) {
                     console.error('Invalid JSON for evolutions:', e);
                 }
-    
+
                 setPokemon({ ...data, moves, evolutions });
-    
+
                 setTimeout(() => setStatAnimation(true), 500);
             })
             .catch((error) => console.error(error));
@@ -49,21 +46,39 @@ const PokemonDetail = () => {
 
     const renderStatBar = (value, color) => (
         <div className="w-full bg-gray-700 rounded-full h-3 mb-1">
-            <div
-                className={`h-3 rounded-full ${color} transition-all duration-1000`}
+            <motion.div
+                className={`h-3 rounded-full ${color} transition-all`}
                 style={{ width: statAnimation ? `${(value / 255) * 100}%` : '0%' }}
-            ></div>
+                animate={{
+                    width: statAnimation ? `${(value / 255) * 100}%` : '0%',
+                }}
+                transition={{ duration: 1 }}
+            />
         </div>
     );
 
     const getSprite = () => {
         if (spriteType === 'shiny') {
-            return pokemon.chromatique_sprite; // Sprite chromatique
+            return pokemon.chromatique_sprite;
         }
         if (spriteType === 'animated') {
-            return pokemon.animated_front_sprite; // Sprite animé
+            return pokemon.animated_front_sprite;
         }
-        return pokemon.sprite; // Sprite normal
+        return pokemon.sprite;
+    };
+
+    const navigateToNextPokemon = () => {
+        const nextId = parseInt(id) + 1;
+        if (nextId <= 151) {
+            window.location.href = `/${nextId}`;
+        }
+    };
+
+    const navigateToPrevPokemon = () => {
+        const prevId = parseInt(id) - 1;
+        if (prevId >= 1) {
+            window.location.href = `/${prevId}`;
+        }
     };
 
     return (
@@ -77,44 +92,86 @@ const PokemonDetail = () => {
                     <h1 className="text-xl font-bold">{`#${pokemon.number.toString().padStart(3, '0')}`}</h1>
                 </div>
 
+                {/* Navigation des Pokémon */}
+                <div className="flex justify-between mb-6">
+                    <button
+                        onClick={navigateToPrevPokemon}
+                        className="p-2 rounded-md text-white hover:bg-gray-700"
+                        disabled={parseInt(id) <= 1} // Désactiver bouton "Précédent" si id <= 1
+                    >
+                        <FaArrowLeft />
+                    </button>
+                    <button
+                        onClick={navigateToNextPokemon}
+                        className="p-2 rounded-md text-white hover:bg-gray-700"
+                        disabled={parseInt(id) >= 151} // Désactiver bouton "Suivant" si id >= 151
+                    >
+                        <FaArrowRight />
+                    </button>
+                </div>
+
                 {/* Sprite avec effet blur */}
-                <div className="relative flex justify-center mb-6">
-                    <div className="absolute inset-0 w-36 h-36 bg-gray-700 blur-xl rounded-full animate-pulse left-[150px]" />
-                    <img
+                <motion.div
+                    className="relative flex justify-center mb-6"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div
+                        className="absolute inset-0 w-36 h-36 bg-gray-500 blur-xl rounded-full animate-pulse left-[150px]"
+                        animate={{
+                            opacity: spriteType === 'shiny' ? 1 : 0,
+                        }}
+                        transition={{ duration: 0.5 }}
+                    />
+                    <motion.img
                         src={getSprite()}
                         alt={pokemon.name}
                         className="relative z-10 w-36 h-36"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
                     />
-                </div>
+                </motion.div>
 
                 {/* Type de sprite */}
                 <div className="flex justify-center mb-6 space-x-4">
-            <button
-                className={`px-4 py-2 rounded-md ${spriteType === 'normal' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
-                onClick={() => setSpriteType('normal')}
-            >
-                <FaCircle className="inline-block mr-2" />
-                Normal
-            </button>
-            <button
-                className={`px-4 py-2 rounded-md ${spriteType === 'shiny' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
-                onClick={() => setSpriteType('shiny')}
-            >
-                <FaStar className="inline-block mr-2" />
-                Shiny
-            </button>
-            <button
-                className={`px-4 py-2 rounded-md ${spriteType === 'animated' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
-                onClick={() => setSpriteType('animated')}
-            >
-                <FaRegPlayCircle className="inline-block mr-2" />
-                Animated
-            </button>
-        </div>
+                    <motion.button
+                        className={`px-4 py-2 rounded-md ${spriteType === 'normal' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
+                        onClick={() => setSpriteType('normal')}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <FaCircle className="inline-block mr-2" />
+                        Normal
+                    </motion.button>
+                    <button
+                        className={`px-4 py-2 rounded-md ${spriteType === 'shiny' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
+                        onClick={() => setSpriteType('shiny')}
+                    >
+                        <FaStar className="inline-block mr-2" />
+                        Shiny
+                    </button>
+                    <button
+                        className={`px-4 py-2 rounded-md ${spriteType === 'animated' ? 'bg-gray-600 text-white' : 'bg-gray-500'} flex items-center`}
+                        onClick={() => setSpriteType('animated')}
+                    >
+                        <FaRegPlayCircle className="inline-block mr-2" />
+                        Animated
+                    </button>
+                </div>
 
                 {/* Pokémon Info */}
-                <h2 className="text-3xl font-bold text-center">{pokemon.name}</h2>
-                <p className="text-center text-gray-400">{pokemon.types}</p>
+                <motion.div
+                    key={pokemon.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1 }}
+                >
+                    <h2 className="text-3xl font-bold text-center">{pokemon.name}</h2>
+                    <p className="text-center text-gray-400">{pokemon.types}</p>
+                </motion.div>
 
                 {/* Stats */}
                 {activeTab === 'about' && (
@@ -214,7 +271,6 @@ const PokemonDetail = () => {
                             {pokemon.evolutions && pokemon.evolutions.length > 0 ? (
                                 <div className="space-y-4 flex flex-col">
                                     {pokemon.evolutions.map((evolution, index) => {
-                                        // Vérifie si l'ID de l'évolution correspond à l'URL actuelle
                                         const isActive = location.pathname === `/${evolution.id}`;
                                         return (
                                             <Link 
@@ -243,17 +299,10 @@ const PokemonDetail = () => {
                             <p className="text-gray-300">Base Experience: {pokemon.base_experience}</p>
                             <p className="text-gray-300">Capture Rate: {pokemon.capture_rate}</p>
                             <p className="text-gray-300">Habitat: {pokemon.habitat}</p>
-                            <p className="text-gray-300">Abilities: {pokemon.abilities}</p>
+                            <p className="text-gray-300">Weight: {pokemon.weight}</p>
+                            <p className="text-gray-300">Height: {pokemon.height}</p>
                         </div>
                     )}
-                </div>
-
-                {/* Audio */}
-                <div className="mt-6 text-center">
-                    <audio controls>
-                        <source src={pokemon.cry_url} type="audio/ogg" />
-                        Your browser does not support the audio element.
-                    </audio>
                 </div>
             </div>
         </div>
