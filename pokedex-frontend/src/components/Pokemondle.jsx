@@ -7,6 +7,7 @@ const PokemonGame = () => {
     const [guessedPokemon, setGuessedPokemon] = useState('');
     const [guesses, setGuesses] = useState([]);
     const [debugMode, setDebugMode] = useState(false);
+    const [suggestions, setSuggestions] = useState([]);
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/pokemons/')
@@ -17,17 +18,33 @@ const PokemonGame = () => {
             .catch((error) => console.error(error));
     }, []);
 
+    const handleInputChange = (value) => {
+        setGuessedPokemon(value);
+        const filteredSuggestions = pokemons
+            .filter((pokemon) => pokemon.name.toLowerCase().startsWith(value.toLowerCase())) // Utilisation de startsWith
+            .slice(0, 10); // Limiter les suggestions à 5
+        setSuggestions(filteredSuggestions);
+    };
+    
+
+    const handleSuggestionClick = (name) => {
+        setGuessedPokemon(name);
+        setSuggestions([]); // Vider les suggestions après le clic
+    };
+
     const handleGuess = (guess) => {
         if (guesses.length >= 15) {
             alert("Vous avez atteint la limite de 15 propositions !");
             return;
         }
 
-        const pokemon = pokemons.find(pokemon => pokemon.name.toLowerCase() === guess.toLowerCase());
-        if (pokemon && !guesses.some(guess => guess.name.toLowerCase() === pokemon.name.toLowerCase())) {
+        const pokemon = pokemons.find((pokemon) => pokemon.name.toLowerCase() === guess.toLowerCase());
+        if (pokemon && !guesses.some((g) => g.name.toLowerCase() === pokemon.name.toLowerCase())) {
             setGuesses([...guesses, pokemon]);
+            setGuessedPokemon(''); // Vider le champ de recherche
+            setSuggestions([]); // Vider les suggestions
         } else {
-            alert("Ce Pokémon a déjà été deviné !");
+            alert("Ce Pokémon a déjà été deviné ou n'existe pas !");
         }
     };
 
@@ -43,6 +60,7 @@ const PokemonGame = () => {
     const renderGuesses = () => {
         return guesses.map((pokemon, index) => (
             <tr key={index} className="text-center">
+                <td className={`p-2 flex justify-center ${getCellClass('sprite', pokemon.sprite)}`}>{<img src={pokemon.sprite} alt={pokemon.name} className="w-16 h-16" />}</td>
                 <td className={`p-2 ${getCellClass('name', pokemon.name)}`}>{pokemon.name}</td>
                 <td className={`p-2 ${getCellClass('height', pokemon.height)}`}>{pokemon.height}</td>
                 <td className={`p-2 ${getCellClass('weight', pokemon.weight)}`}>{pokemon.weight}</td>
@@ -75,11 +93,11 @@ const PokemonGame = () => {
                 </div>
             )}
 
-            <div className="mb-8 flex justify-center">
+            <div className="mb-8 flex justify-center relative">
                 <input
                     type="text"
                     value={guessedPokemon}
-                    onChange={(e) => setGuessedPokemon(e.target.value)}
+                    onChange={(e) => handleInputChange(e.target.value)}
                     className="w-2/3 sm:w-1/2 md:w-1/3 p-2 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Devinez un Pokémon..."
                 />
@@ -89,6 +107,25 @@ const PokemonGame = () => {
                 >
                     Deviner
                 </button>
+
+                {suggestions.length > 0 && (
+                    <ul className="absolute top-full mt-1 w-2/3 sm:w-1/2 md:w-1/3 bg-gray-800 border border-gray-600 rounded-lg max-h-40 overflow-y-auto">
+                        {suggestions.map((pokemon, index) => (
+                            <li
+                                key={index}
+                                onClick={() => handleSuggestionClick(pokemon.name)}
+                                className="flex items-center p-2 hover:bg-gray-700 cursor-pointer"
+                            >
+                                <img
+                                    src={pokemon.sprite}
+                                    alt={pokemon.name}
+                                    className="w-8 h-8 mr-2"
+                                />
+                                {pokemon.name}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
 
             <div className="mb-8">
@@ -96,6 +133,7 @@ const PokemonGame = () => {
                 <table className="table-auto w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-700">
+                            <th className="p-2">Sprite</th>
                             <th className="p-2">Nom</th>
                             <th className="p-2">Taille</th>
                             <th className="p-2">Poids</th>
