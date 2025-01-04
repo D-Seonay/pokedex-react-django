@@ -67,7 +67,7 @@ const PokemonList = () => {
                             key={pokemon.id}
                             className="relative p-4 bg-white/10 backdrop-blur-md rounded-xl shadow-lg hover:scale-105 transform transition duration-300"
                         >
-                            <Link to={`/${pokemon.id}`} className="text-white no-underline">
+                            <Link to={`/pokemons/${pokemon.id}`} className="text-white no-underline">
                                 {/* Sprite */}
                                 <div className="flex justify-center">
                                     <img

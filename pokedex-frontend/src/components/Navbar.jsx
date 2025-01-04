@@ -70,6 +70,13 @@ const Navbar = () => {
                         <span>Pokémon</span>
                     </Link>
                     <Link
+                        to="/items"
+                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
+                    >
+                        <TbPokeball className="text-lg" />
+                        <span>Items</span>
+                    </Link>
+                    <Link
                         to="/pokemondle"
                         className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
                     >

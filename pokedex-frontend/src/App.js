@@ -8,6 +8,8 @@ import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Pokemondle from './components/Pokemondle';
+import ItemList from './components/ItemList';
+import ItemDetail from './components/ItemDetail';
 
 const App = () => {
     return (
@@ -22,9 +24,26 @@ const App = () => {
                         <PokemonList />
                     </PrivateRoute>
                 } />
-                <Route path="/:id" element={
+                <Route path="/pokemons" element={
+                    <PrivateRoute>
+                        <PokemonList />
+                    </PrivateRoute>
+                } />
+                <Route path="/pokemons/:id" element={
                     <PrivateRoute>
                         <PokemonDetail />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/items" element={
+                    <PrivateRoute>
+                        <ItemList />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/items/:id" element={
+                    <PrivateRoute>
+                        <ItemDetail />
                     </PrivateRoute>
                 } />
 

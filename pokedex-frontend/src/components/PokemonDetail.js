@@ -70,14 +70,14 @@ const PokemonDetail = () => {
     const navigateToNextPokemon = () => {
         const nextId = parseInt(id) + 1;
         if (nextId <= 151) {
-            window.location.href = `/${nextId}`;
+            window.location.href = `/pokemons/${nextId}`;
         }
     };
 
     const navigateToPrevPokemon = () => {
         const prevId = parseInt(id) - 1;
         if (prevId >= 1) {
-            window.location.href = `/${prevId}`;
+            window.location.href = `/pokemons/${prevId}`;
         }
     };
 
@@ -86,7 +86,7 @@ const PokemonDetail = () => {
             <div className="max-w-lg mx-auto bg-gray-800 rounded-lg shadow-md p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
-                    <Link to="/" className="text-gray-400 hover:text-gray-200">
+                    <Link to="/pokemons" className="text-gray-400 hover:text-gray-200">
                         ← Back
                     </Link>
                     <h1 className="text-xl font-bold">{`#${pokemon.number.toString().padStart(3, '0')}`}</h1>
