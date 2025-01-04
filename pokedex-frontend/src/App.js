@@ -7,6 +7,7 @@ import Login from './components/Login';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Pokemondle from './components/Pokemondle';
 
 const App = () => {
     return (
@@ -26,6 +27,13 @@ const App = () => {
                         <PokemonDetail />
                     </PrivateRoute>
                 } />
+
+                <Route path="/pokemondle" element={
+                    <PrivateRoute>
+                        <Pokemondle />
+                    </PrivateRoute>
+                } />
+
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
             </Routes>
