@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = "Fetch and store items from PokeAPI"
 
     def handle(self, *args, **kwargs):
-        api_url = "https://pokeapi.co/api/v2/item?limit=1000"
+        api_url = "https://pokeapi.co/api/v2/item"
         response = self.safe_request(api_url)
 
         if not response or "results" not in response:
