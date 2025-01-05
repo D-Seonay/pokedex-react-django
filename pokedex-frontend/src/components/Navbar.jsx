@@ -90,6 +90,53 @@ const Navbar = () => {
                         <FaEnvelope className="text-lg" />
                         <span>Contact</span>
                     </Link>
+
+                    {/* Gestion du compte utilisateur */}
+
+                    {isAuthenticated ? (
+                        <div className="flex items-center space-x-2">
+                            <button
+                                onClick={toggleDropdown}
+                                className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
+                            >
+                                <FaUser className="text-lg" />
+                                <span>Account</span>
+                            </button>
+
+                            {/* Menu déroulant */}
+                            {dropdownOpen && (
+                                <div className="mt-4 flex flex-col items-center space-y-2 absolute top-12 right-0 bg-gray-900 p-4 rounded-lg shadow-md">
+                                    <Link
+                                        to="/profile"
+                                        className="text-gray-300 hover:text-white transition-all duration-300"
+                                        onClick={toggleMenu}
+                                    >
+                                        Profile
+                                    </Link>
+                                    <Link
+                                        to="/my-teams"
+                                        className="text-gray-300 hover:text-white transition-all duration-300"
+                                        onClick={toggleMenu}
+                                    >
+                                        My Teams
+                                    </Link>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="text-red-500"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="text-gray-300 hover:text-white transition-all duration-300"
+                        >
+                            Login
+                        </Link>
+                    )}
                 </div>
             </div>
 

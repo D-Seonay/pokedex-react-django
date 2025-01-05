@@ -9,6 +9,7 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -16,25 +17,34 @@ const Register = () => {
         setError("");
         setSuccess("");
 
-        console.log("Form submitted");
-        console.log("Username:", username);
-        console.log("Email:", email);
-        console.log("Password:", password);
-        console.log("Error:", error);
+        if (password !== confirmPassword) {
+            setError("Les mots de passe ne correspondent pas.");
+            return;
+        }
 
-
+        setLoading(true); // Démarre le chargement
         try {
-            const response = await axios.post("http://localhost:8000/api/register/", {
+            console.log("Sending data:", { username, email, password });
+            const response = await axios.post("http://localhost:8000/api/register/" , 
+            {
                 username,
                 email,
                 password
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
             console.log("Registration successful:", response.data);
             setSuccess("Registration successful!");
-            setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
+            setTimeout(() => navigate("/login"), 2000); // Redirection après 2 secondes
         } catch (err) {
-            setError("Failed to register. Please try again." + err);
+            const errorMessage = err.response?.data?.message || "Failed to register. Please try again.";
+            setError(errorMessage);
             console.error("Registration error:", err);
+        } finally {
+            setLoading(false); // Fin du chargement
         }
     };
 
@@ -87,11 +97,26 @@ const Register = () => {
                             required
                         />
                     </div>
+                    <div className="mb-4">
+                        <label htmlFor="confirmPassword" className="block text-gray-400 mb-2">
+                            Confirm Password
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+                            placeholder="Confirm your password"
+                            required
+                        />
+                    </div>
                     <button
                         type="submit"
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200"
+                        disabled={loading}
                     >
-                        Register
+                        {loading ? "Loading..." : "Register"}
                     </button>
                 </form>
                 <p className="mt-4 text-center text-gray-400">

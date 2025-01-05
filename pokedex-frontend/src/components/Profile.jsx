@@ -1,57 +1,109 @@
-import React, { useState } from 'react';
-import { FaUserEdit, FaSignOutAlt } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Profile = () => {
-    const [userData, setUserData] = useState({
-        name: 'John Doe', // Exemple de données utilisateur
-        email: 'johndoe@example.com',
-        profilePicture: 'https://via.placeholder.com/150', // Exemple d'URL d'image de profil
-    });
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const token = localStorage.getItem("token");  // Vérifier si le token est bien présent
+                console.log("Token:", token);
+                if (!token) {
+                    setError("No authentication token found.");
+                    setLoading(false);
+                    return;
+                }
 
-    const handleLogout = () => {
-        // Supprimer le token ou toute donnée d'authentification
-        localStorage.removeItem("authToken");
-        navigate("/login");
-    };
+                // Envoi du token avec la bonne syntaxe
+                const response = await axios.get("http://localhost:8000/api/user/profile", {
+                    headers: {
+                        "Authorization": `Token ${token}`,  // Utilisez "Token" au lieu de "Bearer"
+                        "Content-Type": "application/json",
+                    },
+                });
 
-    const handleEditProfile = () => {
-        // Ajouter une logique pour éditer le profil si nécessaire
-        alert("Rediriger vers la page d'édition du profil.");
-    };
+                setUser(response.data);
+                setLoading(false);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to fetch user data. Please try again later." + err);
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();  // Appel pour récupérer les données
+    }, []);  // Effect au chargement du composant
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+                <p className="text-red-500 text-lg">{error}</p>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+                <p className="text-white text-lg">User data not found.</p>
+            </div>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-gray-100 py-8 px-4">
-            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-                {/* Section Photo de Profil */}
-                <div className="flex items-center justify-center flex-col">
-                    <img
-                        src={userData.profilePicture}
-                        alt="Profile"
-                        className="w-32 h-32 rounded-full mb-4"
-                    />
-                    <h2 className="text-3xl font-semibold text-gray-800">{userData.name}</h2>
-                    <p className="text-gray-500">{userData.email}</p>
+        <div className="min-h-screen bg-gray-900 text-white p-6">
+            <div className="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-md p-6">
+                {/* Header */}
+                <div className="text-center mb-6">
+                    <h1 className="text-3xl font-bold mb-2">{user.username}'s Profile</h1>
+                    <p className="text-gray-400">Welcome back, trainer!</p>
                 </div>
 
-                {/* Boutons Editer le Profil et Se Déconnecter */}
-                <div className="mt-6 flex justify-around">
-                    <button
-                        onClick={handleEditProfile}
-                        className="flex items-center space-x-2 text-blue-500 hover:text-blue-700 transition duration-300"
+                {/* Profile Info */}
+                <div className="text-sm space-y-4 mb-6">
+                    <p>
+                        <span className="font-bold text-gray-300">Score:</span> {user.profile?.score || "Not available"}
+                    </p>
+                    <p>
+                        <span className="font-bold text-gray-300">Favorite Pokémon:</span> {user.profile?.favorite_pokemon || "None set"}
+                    </p>
+                    <p>
+                        <span className="font-bold text-gray-300">Email:</span> {user.email}
+                    </p>
+                    <p>
+                        <span className="font-bold text-gray-300">Username:</span> {user.username}
+                    </p>
+                    <p>
+                        <span className="font-bold text-gray-300">Teams:</span>
+                    </p>
+                    <ul className="list-disc list-inside">
+                        {user.teams && user.teams.length > 0 ? (
+                            user.teams.map((team, index) => (
+                                <li key={index}>{team.name}</li>
+                            ))
+                        ) : (
+                            <li>No teams found.</li>
+                        )}
+                    </ul>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="mt-6 text-center">
+                    <Link
+                        to="/edit-profile"
+                        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200"
                     >
-                        <FaUserEdit className="text-xl" />
-                        <span>Edit Profile</span>
-                    </button>
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center space-x-2 text-red-500 hover:text-red-700 transition duration-300"
-                    >
-                        <FaSignOutAlt className="text-xl" />
-                        <span>Logout</span>
-                    </button>
+                        Edit Profile
+                    </Link>
                 </div>
             </div>
         </div>

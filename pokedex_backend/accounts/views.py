@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 import logging
+from .models import Profile
 
 # Initialisation du logger
 logger = logging.getLogger(__name__)
@@ -22,24 +23,25 @@ def register(request):
 
             # Vérification des duplicatas
             if User.objects.filter(username=username).exists():
-                logger.warning(f"Nom d'utilisateur déjà pris: {username}")
                 return Response(
-                    message="Le nom d'utilisateur est déjà pris. Veuillez en choisir un autre.",
+                    {"message": "Le nom d'utilisateur est déjà pris."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
             if User.objects.filter(email=email).exists():
-                logger.warning(f"Email déjà utilisé: {email}")
                 return Response(
-                    message="L'adresse email est déjà utilisée. Veuillez en choisir une autre.",
+                    {"message": "L'adresse email est déjà utilisée."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
             # Création de l'utilisateur
             user = serializer.save()
             user.set_password(request.data['password'])
-            user.email = email  # Mise à jour de l'email normalisé
+            user.email = email
             user.save()
+
+            # Création du profil avec un score de 0 et un Pokémon préféré vide
+            Profile.objects.create(user=user, score=0, favorite_pokemon="")
 
             # Création du token
             token = Token.objects.create(user=user)
@@ -47,7 +49,7 @@ def register(request):
             return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            logger.error(f"Erreur lors de l'inscription: {str(e)}")
+            logger.error(f"Erreur lors de l'enregistrement: {str(e)}")
             return Response(
                 {'message': 'Une erreur interne est survenue. Veuillez réessayer plus tard.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -84,8 +86,11 @@ def login(request):
         # Création ou récupération du token
         token, created = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(user)
+        profile = user.profile  # Récupération du profil de l'utilisateur
+        data = serializer.data
+        data['profile'] = {'score': profile.score, 'favorite_pokemon': profile.favorite_pokemon}  # Ajouter les informations du profil
 
-        return Response({'token': token.key, 'user': serializer.data})
+        return Response({'token': token.key, 'user': data})
 
     except User.DoesNotExist:
         return Response(
@@ -98,10 +103,39 @@ def login(request):
             {'message': 'Une erreur interne est survenue. Veuillez réessayer plus tard.'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+        
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def test_token(request):
+    user = request.user
+    profile = user.profile  # Récupération du profil de l'utilisateur
+    serializer = UserSerializer(user)
+    data = serializer.data
+    data['profile'] = {
+        'score': profile.score,
+        'favorite_pokemon': profile.favorite_pokemon
+    }  # Ajouter les informations du profil
+    return Response(data)
+
 
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def test_token(request):
-    return Response("Token valide")
+def user_profile(request):
+    # Récupérer l'utilisateur actuellement authentifié
+    user = request.user  # L'utilisateur est automatiquement récupéré via le token
+
+    # Récupération du profil de l'utilisateur
+    profile = user.profile  # Supposons que vous ayez un modèle Profile lié à User
+
+    # Sérialisation des données de l'utilisateur et de son profil
+    serializer = UserSerializer(user)
+    data = serializer.data  # Sérialise les données de l'utilisateur
+    data['profile'] = {
+        'score': profile.score,
+        'favorite_pokemon': profile.favorite_pokemon
+    }  # Ajoute les informations du profil de l'utilisateur à la réponse
+
+    return Response(data)

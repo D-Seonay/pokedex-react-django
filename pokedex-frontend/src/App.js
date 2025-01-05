@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './components/Home';
 import PokemonList from './components/PokemonList';
 import PokemonDetail from './components/PokemonDetail';
 import Register from './components/Register';
@@ -10,6 +11,7 @@ import Footer from './components/Footer';
 import Pokemondle from './components/Pokemondle';
 import ItemList from './components/ItemList';
 import ItemDetail from './components/ItemDetail';
+import Profile from './components/Profile';
 
 const App = () => {
     return (
@@ -21,7 +23,7 @@ const App = () => {
 
                 <Route path="/" element={
                     <PrivateRoute>
-                        <PokemonList />
+                        <Home />
                     </PrivateRoute>
                 } />
                 <Route path="/pokemons" element={
@@ -50,6 +52,12 @@ const App = () => {
                 <Route path="/pokemondle" element={
                     <PrivateRoute>
                         <Pokemondle />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/profile" element={
+                    <PrivateRoute>
+                        <Profile />
                     </PrivateRoute>
                 } />
 
