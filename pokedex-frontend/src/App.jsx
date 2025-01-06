@@ -13,6 +13,7 @@ import ItemList from './components/Items/ItemList';
 import ItemDetail from './components/Items/ItemDetail';
 import Profile from './components/Profile/Profile';
 import EditProfile from './components/Profile/EditProfile';
+import FeaturesIncoming from './components/FeatureIncoming';
 
 
 const App = () => {
@@ -66,6 +67,24 @@ const App = () => {
                 <Route path="/profile/edit" element={
                     <PrivateRoute>
                         <EditProfile />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/features-incoming" element={
+                    <PrivateRoute>
+                        <FeaturesIncoming />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/teams" element={
+                    <PrivateRoute>
+                        <FeaturesIncoming />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/leaderboard" element={
+                    <PrivateRoute>
+                        <FeaturesIncoming />
                     </PrivateRoute>
                 } />
 
