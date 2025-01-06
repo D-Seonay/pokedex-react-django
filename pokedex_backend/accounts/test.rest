@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### Test the registration endpoint
-POST http://localhost:8000/api/register
+POST http://localhost:8000/api/register/
 Content-Type: application/json
 
 {
@@ -17,6 +17,12 @@ Content-Type: application/json
     "email": "newuser@example.com"
 }
 
-### Test the logout endpoint
-POST http://localhost:8000/api/accounts/logout/
-Authorization: Bearer <your_token_here>
+### Test the token endpoint
+GET http://localhost:8000/api/test_token/
+Content-Type: application/json
+Authorization: Token 76762d9bf0231a0e6ad7fad4d7e9ccbe91f981c7
+
+### Test the user/profile endpoint
+GET http://localhost:8000/api/user/profile/
+Content-Type: application/json
+Authorization: Token 76762d9bf0231a0e6ad7fad4d7e9ccbe91f981c7

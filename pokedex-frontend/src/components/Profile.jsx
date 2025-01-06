@@ -20,7 +20,7 @@ const Profile = () => {
                 }
 
                 // Envoi du token avec la bonne syntaxe
-                const response = await axios.get("http://localhost:8000/api/user/profile", {
+                const response = await axios.get("http://localhost:8000/api/user/profile/", {
                     headers: {
                         "Authorization": `Token ${token}`,  // Utilisez "Token" au lieu de "Bearer"
                         "Content-Type": "application/json",

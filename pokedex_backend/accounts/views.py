@@ -105,7 +105,7 @@ def login(request):
         )
         
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
+@authentication_classes([TokenAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
     user = request.user
@@ -116,12 +116,12 @@ def test_token(request):
         'score': profile.score,
         'favorite_pokemon': profile.favorite_pokemon
     }  # Ajouter les informations du profil
-    return Response(data)
+    return Response({"message": "Token valide", "data": data}, status=status.HTTP_200_OK)
 
 
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
+@authentication_classes([TokenAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def user_profile(request):
     # Récupérer l'utilisateur actuellement authentifié
