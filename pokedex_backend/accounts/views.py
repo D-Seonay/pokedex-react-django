@@ -139,3 +139,21 @@ def user_profile(request):
     }  # Ajoute les informations du profil de l'utilisateur à la réponse
 
     return Response(data)
+
+
+@api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def update_user_profile(request):
+    user = request.user
+    data = request.data
+
+    user.username = data.get('username', user.username)
+    user.email = data.get('email', user.email)
+    user.save()
+
+    profile = user.profile
+    profile.favorite_pokemon = data.get('favorite_pokemon', profile.favorite_pokemon)
+    profile.save()
+
+    return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)

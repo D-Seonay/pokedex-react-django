@@ -11,7 +11,9 @@ import Footer from './components/Footer';
 import Pokemondle from './components/Pokemondle';
 import ItemList from './components/ItemList';
 import ItemDetail from './components/ItemDetail';
-import Profile from './components/Profile';
+import Profile from './components/Profile/Profile';
+import EditProfile from './components/Profile/EditProfile';
+
 
 const App = () => {
     return (
@@ -58,6 +60,12 @@ const App = () => {
                 <Route path="/profile" element={
                     <PrivateRoute>
                         <Profile />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/edit-profile" element={
+                    <PrivateRoute>
+                        <EditProfile />
                     </PrivateRoute>
                 } />
 
