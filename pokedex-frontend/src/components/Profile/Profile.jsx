@@ -41,7 +41,7 @@ const Profile = () => {
                 setLoading(false);
             } catch (err) {
                 console.error(err);
-                setError("Failed to fetch user data. Please try again later." + err);
+                setError("Failed to fetch user data. Please try again later.");
                 setLoading(false);
             }
         };
@@ -85,10 +85,11 @@ const Profile = () => {
                     <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
                         {/* Photo de profil */}
                         <img
-                            src={user.profile?.profile_picture || "https://via.placeholder.com/150"}
-                            alt={`${user.username}'s profile`}
-                            className="w-full h-full object-cover"
-                        />
+    src={`http://localhost:8000${user.profile?.profile_picture}`}
+    alt={`${user.username}'s profile`}
+    className="w-full h-full object-cover"
+/>
+
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold">{user.username}'s Profile</h1>

@@ -14,6 +14,7 @@ const EditProfile = () => {
         email: "",
         favorite_pokemon: "",
     });
+    const [profilePicture, setProfilePicture] = useState(null); // État pour l'image de profil
 
     const navigate = useNavigate();
 
@@ -85,20 +86,30 @@ const EditProfile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                setError("No authentication token found.");
-                return;
-            }
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("No authentication token found.");
+            return;
+        }
 
+        const form = new FormData();
+        form.append("username", formData.username);
+        form.append("email", formData.email);
+        form.append("favorite_pokemon", formData.favorite_pokemon);
+
+        // Ajoutez l'image de profil si elle est présente
+        if (profilePicture) {
+            form.append("profile_picture", profilePicture);
+        }
+
+        try {
             await axios.put(
                 "http://localhost:8000/api/user/profile/update/",
-                formData,
+                form,
                 {
                     headers: {
                         "Authorization": `Token ${token}`,
-                        "Content-Type": "application/json",
+                        "Content-Type": "multipart/form-data", // Spécifiez que c'est du multipart
                     },
                 }
             );
@@ -205,6 +216,21 @@ const EditProfile = () => {
                                 </div>
                             )}
                         </div>
+                    </div>
+
+                    {/* Profile Picture */}
+                    <div>
+                        <label className="block text-gray-300 font-bold mb-2" htmlFor="profile_picture">
+                            Profile Picture
+                        </label>
+                        <input
+                            type="file"
+                            id="profile_picture"
+                            name="profile_picture"
+                            accept="image/*"
+                            onChange={(e) => setProfilePicture(e.target.files[0])}
+                            className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
                     </div>
 
                     <div className="text-center">

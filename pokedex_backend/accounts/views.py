@@ -88,7 +88,8 @@ def login(request):
         serializer = UserSerializer(user)
         profile = user.profile  # Récupération du profil de l'utilisateur
         data = serializer.data
-        data['profile'] = {'score': profile.score, 'favorite_pokemon': profile.favorite_pokemon}  # Ajouter les informations du profil
+        data['profile'] = {'score': profile.score, 'favorite_pokemon': profile.favorite_pokemon,
+                           'profile_picture': profile.profile_picture.url if profile.profile_picture else None}
 
         return Response({'token': token.key, 'user': data})
 
@@ -114,7 +115,8 @@ def test_token(request):
     data = serializer.data
     data['profile'] = {
         'score': profile.score,
-        'favorite_pokemon': profile.favorite_pokemon
+        'favorite_pokemon': profile.favorite_pokemon,
+        'profile_picture': profile.profile_picture.url if profile.profile_picture else None
     }  # Ajouter les informations du profil
     return Response({"message": "Token valide", "data": data}, status=status.HTTP_200_OK)
 
@@ -135,7 +137,8 @@ def user_profile(request):
     data = serializer.data  # Sérialise les données de l'utilisateur
     data['profile'] = {
         'score': profile.score,
-        'favorite_pokemon': profile.favorite_pokemon
+        'favorite_pokemon': profile.favorite_pokemon,
+        'profile_picture': profile.profile_picture.url if profile.profile_picture else None
     }  # Ajoute les informations du profil de l'utilisateur à la réponse
 
     return Response(data)
@@ -154,6 +157,12 @@ def update_user_profile(request):
 
     profile = user.profile
     profile.favorite_pokemon = data.get('favorite_pokemon', profile.favorite_pokemon)
+    
+    # Mise à jour de l'image de profil si elle est présente
+    if 'profile_picture' in request.FILES:
+        profile.profile_picture = request.FILES['profile_picture']
+    
     profile.save()
 
     return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
+
