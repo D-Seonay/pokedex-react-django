@@ -7,6 +7,8 @@ const EditProfile = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [pokemonList, setPokemonList] = useState([]); // Liste des Pokémon avec sprites
+    const [dropdownOpen, setDropdownOpen] = useState(false); // État du menu déroulant
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -15,8 +17,9 @@ const EditProfile = () => {
 
     const navigate = useNavigate();
 
+    // Récupération des données utilisateur et des Pokémon
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
                 if (!token) {
@@ -25,28 +28,43 @@ const EditProfile = () => {
                     return;
                 }
 
-                const response = await axios.get("http://localhost:8000/api/user/profile/", {
+                // Récupération des données utilisateur
+                const userResponse = await axios.get("http://localhost:8000/api/user/profile/", {
                     headers: {
                         "Authorization": `Token ${token}`,
                         "Content-Type": "application/json",
                     },
                 });
 
-                setUser(response.data);
+                setUser(userResponse.data);
                 setFormData({
-                    username: response.data.username,
-                    email: response.data.email,
-                    favorite_pokemon: response.data.profile?.favorite_pokemon || "",
+                    username: userResponse.data.username,
+                    email: userResponse.data.email,
+                    favorite_pokemon: userResponse.data.profile?.favorite_pokemon || "",
                 });
+
+                // Récupération des Pokémon depuis l'API
+                const pokemonResponse = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=151");
+                const pokemonDetails = await Promise.all(
+                    pokemonResponse.data.results.map(async (pokemon) => {
+                        const details = await axios.get(pokemon.url);
+                        return {
+                            name: pokemon.name,
+                            sprite: details.data.sprites.front_default,
+                        };
+                    })
+                );
+                setPokemonList(pokemonDetails);
+
                 setLoading(false);
             } catch (err) {
                 console.error(err);
-                setError("Failed to fetch user data. Please try again later. " + err);
+                setError("Failed to fetch data. Please try again later. " + err);
                 setLoading(false);
             }
         };
 
-        fetchUserData();
+        fetchData();
     }, []);
 
     const handleChange = (e) => {
@@ -54,6 +72,14 @@ const EditProfile = () => {
             ...formData,
             [e.target.name]: e.target.value,
         });
+    };
+
+    const handleFavoriteSelect = (pokemonName) => {
+        setFormData({
+            ...formData,
+            favorite_pokemon: pokemonName,
+        });
+        setDropdownOpen(false); // Fermer le menu déroulant après la sélection
     };
 
     const handleSubmit = async (e) => {
@@ -137,18 +163,48 @@ const EditProfile = () => {
                         />
                     </div>
 
+                    {/* Favorite Pokémon */}
                     <div>
                         <label className="block text-gray-300 font-bold mb-2" htmlFor="favorite_pokemon">
                             Favorite Pokémon
                         </label>
-                        <input
-                            type="text"
-                            id="favorite_pokemon"
-                            name="favorite_pokemon"
-                            value={formData.favorite_pokemon}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        />
+                        <div className="relative">
+                            <button
+                                type="button"
+                                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                            >
+                                {formData.favorite_pokemon
+                                    ? formData.favorite_pokemon.charAt(0).toUpperCase() +
+                                      formData.favorite_pokemon.slice(1)
+                                    : "Select your favorite Pokémon"}
+                            </button>
+
+                            {dropdownOpen && (
+                                <div className="absolute z-10 w-full bg-gray-800 rounded-lg shadow-md mt-2 max-h-60 overflow-y-auto">
+                                    {pokemonList.map((pokemon) => (
+                                        <div
+                                            key={pokemon.name}
+                                            className={`flex items-center px-4 py-2 cursor-pointer ${
+                                                formData.favorite_pokemon === pokemon.name
+                                                    ? "bg-blue-600"
+                                                    : "hover:bg-gray-700"
+                                            }`}
+                                            onClick={() => handleFavoriteSelect(pokemon.name)}
+                                        >
+                                            <img
+                                                src={pokemon.sprite}
+                                                alt={pokemon.name}
+                                                className="w-8 h-8 mr-3"
+                                            />
+                                            <span>
+                                                {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="text-center">

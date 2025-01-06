@@ -1,25 +1,53 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [favoritePokemonSprite, setFavoritePokemonSprite] = useState(null);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
-        // Fetch user profile data
         const fetchUserData = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/user/profile");
-                setUser(response.data);
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    setError("No authentication token found.");
+                    setLoading(false);
+                    return;
+                }
+
+                const response = await axios.get("http://localhost:8000/api/user/profile/", {
+                    headers: {
+                        "Authorization": `Token ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const userData = response.data;
+                setUser(userData);
+
+                // Récupérer le sprite du Pokémon favori
+                if (userData.profile?.favorite_pokemon) {
+                    const pokemonResponse = await axios.get(
+                        `https://pokeapi.co/api/v2/pokemon/${userData.profile.favorite_pokemon.toLowerCase()}`
+                    );
+                    setFavoritePokemonSprite(pokemonResponse.data.sprites.front_default);
+                }
+
                 setLoading(false);
             } catch (err) {
-                setError("Failed to fetch user data. Please try again later.");
+                console.error(err);
+                setError("Failed to fetch user data. Please try again later." + err);
                 setLoading(false);
             }
         };
+
+        fetchUserData();
     }, []);
 
     if (loading) {
@@ -47,26 +75,36 @@ const Profile = () => {
             <div className="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-md p-6">
                 {/* Header */}
                 <div className="text-center mb-6">
-                    <h1 className="text-3xl font-bold mb-2">{user.name}'s Profile</h1>
+                    <h1 className="text-3xl font-bold mb-2">{user.username}'s Profile</h1>
                     <p className="text-gray-400">Welcome back, trainer!</p>
                 </div>
 
                 {/* Profile Info */}
                 <div className="text-sm space-y-4 mb-6">
                     <p>
-                        {/* <span className="font-bold text-gray-300">Score:</span> {user.score} */}
+                        <span className="font-bold text-gray-300">Score:</span> {user.profile.score}
                     </p>
                     <p>
-                        {/* <span className="font-bold text-gray-300">Favorite Pokémon:</span> {user.favoritePokemon || "None set"} */}
+                        <span className="font-bold text-gray-300">Favorite Pokémon:</span>{" "}
+                        {user.profile?.favorite_pokemon || "None set"}
                     </p>
+                    {favoritePokemonSprite && (
+                        <div className="mt-2">
+                            <img
+                                src={favoritePokemonSprite}
+                                alt={user.profile.favorite_pokemon}
+                                className="w-16 h-16"
+                            />
+                        </div>
+                    )}
                     <p>
                         <span className="font-bold text-gray-300">Teams:</span>
                     </p>
-                    <ul className="list-disc list-inside">
+                    {/* <ul className="list-disc list-inside">
                         {user.teams.map((team, index) => (
                             <li key={index}>{team.name}</li>
                         ))}
-                    </ul>
+                    </ul> */}
                 </div>
 
 
