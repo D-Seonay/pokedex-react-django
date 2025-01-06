@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
-import PokemonList from './components/PokemonList';
-import PokemonDetail from './components/PokemonDetail';
+import PokemonList from './components/pokedex/PokemonList';
+import PokemonDetail from './components/pokedex/PokemonDetail';
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
-import PrivateRoute from './components/PrivateRoute';
+import PrivateRoute from './components/Auth/PrivateRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Pokemondle from './components/Pokemondle';
-import ItemList from './components/ItemList';
-import ItemDetail from './components/ItemDetail';
+import ItemList from './components/Items/ItemList';
+import ItemDetail from './components/Items/ItemDetail';
 import Profile from './components/Profile/Profile';
 import EditProfile from './components/Profile/EditProfile';
 
@@ -63,7 +63,7 @@ const App = () => {
                     </PrivateRoute>
                 } />
 
-                <Route path="/edit-profile" element={
+                <Route path="/profile/edit" element={
                     <PrivateRoute>
                         <EditProfile />
                     </PrivateRoute>

@@ -1,129 +1,159 @@
-import React, { useState } from 'react';
-import { FaHome, FaInfoCircle, FaEnvelope, FaUser } from 'react-icons/fa';
-import { TbPokeball } from 'react-icons/tb';
-import { RxHamburgerMenu } from "react-icons/rx";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { FaHome, FaInfoCircle, FaEnvelope } from "react-icons/fa";
+import { TbPokeball } from "react-icons/tb";
+import { IoMdSettings } from "react-icons/io";
+import { FiLogOut } from "react-icons/fi";
+import { AiOutlineTeam } from "react-icons/ai";
+import { FaRankingStar } from "react-icons/fa6";
 
-import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(true); // À ajuster selon l'état réel de l'authentification
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false); // Etat pour ouvrir et fermer le menu burger
-
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    };
-
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
-
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [menuOpen, setMenuOpen] = useState(false);  // Pour gérer l'ouverture du menu sur mobile
+    const [userMenuOpen, setUserMenuOpen] = useState(false);  // Pour gérer le menu utilisateur déroulant
+    const userMenuRef = useRef(null);  // Référence pour le menu utilisateur
     const navigate = useNavigate();
-    const refreshPage = () => {
-        window.location.reload();
-    };
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    setError("No authentication token found.");
+                    setLoading(false);
+                    return;
+                }
+
+                // Récupérer les données utilisateur
+                const response = await axios.get("http://localhost:8000/api/user/profile/", {
+                    headers: {
+                        "Authorization": `Token ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const userData = response.data;
+                setUser(userData);
+                setLoading(false);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to fetch user data. Please try again later.");
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        // Fonction pour fermer le menu utilisateur si on clique en dehors
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setUserMenuOpen(false);
+            }
+        };
+
+        // Ajouter l'écouteur d'événement
+        document.addEventListener("mousedown", handleClickOutside);
+
+        // Nettoyage de l'événement lors du démontage du composant
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
 
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("token");
         navigate("/login");
-        refreshPage();
     };
 
     return (
-        <nav className="bg-gray-900 text-white p-4 shadow-md relative">
+        <nav className="bg-gray-900 text-white p-4">
             <div className="max-w-screen-xl mx-auto flex justify-between items-center">
-                {/* Logo ou Titre de la Navbar */}
-                <div className="flex items-center space-x-2">
-                    <TbPokeball className="text-3xl text-yellow-500" />
-                    <h1 className="text-xl font-bold">Pokédex</h1>
+                {/* Logo avec SVG Pokéball */}
+                <Link to="/" className="text-2xl font-bold text-yellow-500 flex items-center space-x-2">
+                    <TbPokeball className="h-8 w-8 text-yellow-500" />
+                    <span className="text-lg">My Pokedex</span>
+                </Link>
+
+                {/* Icônes de navigation - menu normal */}
+                <div className="hidden md:flex space-x-6">
+                    <Link to="/" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <FaHome className="inline-block mr-2" /> Home
+                    </Link>
+                    <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <FaInfoCircle className="inline-block mr-2" /> About
+                    </Link>
+                    <Link to="/pokemons" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <TbPokeball className="inline-block mr-2" /> Pokémon
+                    </Link>
+                    <Link to="/pokemondle" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <TbPokeball className="inline-block mr-2" /> Pokemondle
+                    </Link>
+                    <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <FaEnvelope className="inline-block mr-2" /> Contact
+                    </Link>
                 </div>
 
-                {/* Menu burger pour mobile */}
-                <button
-                    onClick={toggleMenu}
-                    className="lg:hidden text-white focus:outline-none"
-                >
-                    <RxHamburgerMenu className="w-8 h-8" />
-                </button>
-
-                {/* Menu de navigation (pour mobile et desktop) */}
-                <div className={`lg:flex space-x-6 ${menuOpen ? 'hidden' : 'hidden'} lg:block`}>
-                    <Link
-                        to="/"
-                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
-                    >
-                        <FaHome className="text-lg" />
-                        <span>Home</span>
-                    </Link>
-                    <Link
-                        to="/about"
-                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
-                    >
-                        <FaInfoCircle className="text-lg" />
-                        <span>About</span>
-                    </Link>
-                    <Link
-                        to="/pokemons"
-                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
-                    >
-                        <TbPokeball className="text-lg" />
-                        <span>Pokémon</span>
-                    </Link>
-                    <Link
-                        to="/items"
-                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
-                    >
-                        <TbPokeball className="text-lg" />
-                        <span>Items</span>
-                    </Link>
-                    <Link
-                        to="/pokemondle"
-                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
-                    >
-                        <TbPokeball className="text-lg" />
-                        <span>Pokédle</span>
-                    </Link>
-                    <Link
-                        to="/contact"
-                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
-                    >
-                        <FaEnvelope className="text-lg" />
-                        <span>Contact</span>
-                    </Link>
-
-                    {/* Gestion du compte utilisateur */}
-
-                    {isAuthenticated ? (
-                        <div className="flex items-center space-x-2">
+                {/* Bouton profil utilisateur */}
+                <div className="flex items-center space-x-4 relative">
+                    {user ? (
+                        <div>
                             <button
-                                onClick={toggleDropdown}
-                                className="flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300"
+                                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                className="flex items-center space-x-2"
                             >
-                                <FaUser className="text-lg" />
-                                <span>Account</span>
+                                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-700">
+                                    <img
+                                        src={`http://localhost:8000${user.profile?.profile_picture}`}
+                                        alt={`${user.username}'s profile`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <span>{user.username}</span>
                             </button>
 
-                            {/* Menu déroulant */}
-                            {dropdownOpen && (
-                                <div className="mt-4 flex flex-col items-center space-y-2 absolute top-12 right-0 bg-gray-900 p-4 rounded-lg shadow-md">
+                            {/* Menu déroulant utilisateur */}
+                            {userMenuOpen && (
+                                <div ref={userMenuRef} className="absolute right-0 mt-2 bg-gray-800 p-2 rounded shadow-lg w-48">
                                     <Link
-                                        to="/profile"
-                                        className="text-gray-300 hover:text-white transition-all duration-300"
-                                        onClick={toggleMenu}
+                                        to="/profile/edit"
+                                        className="block text-sm text-white hover:text-yellow-500 p-2"
                                     >
-                                        Profile
+                                        <IoMdSettings className="inline-block mr-2" />
+                                        Paramètres
                                     </Link>
                                     <Link
-                                        to="/my-teams"
-                                        className="text-gray-300 hover:text-white transition-all duration-300"
-                                        onClick={toggleMenu}
+                                        to="/teams"
+                                        className="block text-sm text-white hover:text-yellow-500 p-2"
                                     >
-                                        My Teams
+                                        <AiOutlineTeam className="inline-block mr-2" />
+                                        Mes équipes
+                                    </Link>
+                                    <Link
+                                        to="/leaderboard"
+                                        className="block text-sm text-white hover:text-yellow-500 p-2"
+                                    >
+                                        <FaRankingStar className="inline-block mr-2" />
+                                        Classement
                                     </Link>
                                     <button
                                         onClick={handleLogout}
-                                        className="text-red-500"
+                                        className="block text-sm text-white hover:text-yellow-500 p-2 w-full text-left"
                                     >
+                                        <FiLogOut className="inline-block mr-2" />
                                         Logout
                                     </button>
                                 </div>
@@ -132,91 +162,41 @@ const Navbar = () => {
                     ) : (
                         <Link
                             to="/login"
-                            className="text-gray-300 hover:text-white transition-all duration-300"
+                            className="text-xl hover:text-yellow-500 transition-all duration-300"
                         >
                             Login
                         </Link>
                     )}
                 </div>
+
+                {/* Menu mobile */}
+                <button
+                    className="md:hidden text-3xl"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                >
+                    ☰
+                </button>
             </div>
 
-            {/* Menu burger plein écran */}
+            {/* Menu mobile */}
             {menuOpen && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex flex-col items-center justify-center space-y-6">
-                    <button
-                        onClick={toggleMenu}
-                        className="absolute top-4 right-4 text-white text-3xl"
-                    >
-                        <RxHamburgerMenu />
-                    </button>
-                    <Link
-                        to="/"
-                        className="text-2xl text-white hover:text-yellow-500 transition-all duration-300"
-                    >
-                        Home
+                <div className="md:hidden bg-gray-800 p-4 space-y-4">
+                    <Link to="/" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <FaHome className="inline-block mr-2" /> Home
                     </Link>
-                    <Link
-                        to="/about"
-                        className="text-2xl text-white hover:text-yellow-500 transition-all duration-300"
-                    >
-                        About
+                    <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <FaInfoCircle className="inline-block mr-2" /> About
                     </Link>
-                    <Link
-                        to="/pokemons"
-                        className="text-2xl text-white hover:text-yellow-500 transition-all duration-300"
-                    >
-                        Pokémon
+                    <Link to="/pokemons" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <TbPokeball className="inline-block mr-2" /> Pokémon
                     </Link>
-                    <Link
-                        to="/pokemondle"
-                        className="text-2xl text-white hover:text-yellow-500 transition-all duration-300"
-                    >
+                    <Link to="/pokemondle" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         Pokédle
+                        <TbPokeball className="inline-block ml-2" />
                     </Link>
-                    <Link
-                        to="/contact"
-                        className="text-2xl text-white hover:text-yellow-500 transition-all duration-300"
-                    >
-                        Contact
+                    <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <FaEnvelope className="inline-block mr-2" /> Contact
                     </Link>
-                    {/* Gestion du compte utilisateur */}
-                    {isAuthenticated && (
-                        <div className="text-white mt-6">
-                            <button
-                                onClick={toggleDropdown}
-                                className="flex items-center space-x-2"
-                            >
-                                <FaUser className="text-xl" />
-                                <span>Account</span>
-                            </button>
-
-                            {/* Menu déroulant */}
-                            {dropdownOpen && (
-                                <div className="mt-4 flex flex-col items-center space-y-2">
-                                    <Link
-                                        to="/profile"
-                                        className="text-white text-lg hover:text-yellow-500 transition-all duration-300"
-                                        onClick={toggleMenu}
-                                    >
-                                        Profile
-                                    </Link>
-                                    <Link
-                                        to="/my-teams"
-                                        className="text-white text-lg hover:text-yellow-500 transition-all duration-300"
-                                        onClick={toggleMenu}
-                                    >
-                                        My Teams
-                                    </Link>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="text-red-500 text-lg"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </div>
             )}
         </nav>

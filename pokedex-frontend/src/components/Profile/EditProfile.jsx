@@ -55,7 +55,16 @@ const EditProfile = () => {
                         };
                     })
                 );
-                setPokemonList(pokemonDetails);
+
+                // Ajouter le Pokémon 448 (Lucario)
+                const lucarioDetails = await axios.get("https://pokeapi.co/api/v2/pokemon/448");
+                const lucario = {
+                    name: "lucario",
+                    sprite: lucarioDetails.data.sprites.front_default,
+                };
+
+                // Ajouter Lucario à la liste des Pokémon
+                setPokemonList([...pokemonDetails, lucario]);
 
                 setLoading(false);
             } catch (err) {
