@@ -130,6 +130,10 @@ const EditProfile = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate(-1); // Retour à la page précédente
+    };
+
     if (loading) {
         return <LoadingSpinner />;
     }
@@ -145,10 +149,20 @@ const EditProfile = () => {
     return (
         <div className="min-h-screen bg-gray-900 text-white p-6">
             <div className="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-md p-6">
-                {/* Header */}
-                <div className="text-center mb-6">
-                    <h1 className="text-3xl font-bold mb-2">Edit Profile</h1>
-                    <p className="text-gray-400">Update your profile information</p>
+                {/* Header avec bouton retour */}
+                <div className="flex justify-between items-center mb-6">
+                    {/* Bouton Retour */}
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mb-4 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg"
+                >
+                    &larr; Retour
+                </button>
+                    <div className="text-center">
+                        <h1 className="text-3xl font-bold mb-2">Edit Profile</h1>
+                        <p className="text-gray-400">Update your profile information</p>
+                    </div>
+                    <div />
                 </div>
 
                 {/* Form */}
@@ -240,6 +254,9 @@ const EditProfile = () => {
                             onChange={(e) => setProfilePicture(e.target.files[0])}
                             className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
+                        {/* <div className="mt-2 p-2 border-2 border-gray-600 rounded-md bg-gray-800 text-center text-gray-400">
+                            {profilePicture ? profilePicture.name : "No file chosen"}
+                        </div> */}
                     </div>
 
                     <div className="text-center">

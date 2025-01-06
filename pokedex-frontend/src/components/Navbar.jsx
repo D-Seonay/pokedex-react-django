@@ -93,18 +93,21 @@ const Navbar = () => {
                     <Link to="/" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaHome className="inline-block mr-2" /> Home
                     </Link>
-                    <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                    {/* <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaInfoCircle className="inline-block mr-2" /> About
-                    </Link>
+                    </Link> */}
                     <Link to="/pokemons" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <TbPokeball className="inline-block mr-2" /> Pokémon
+                    </Link>
+                    <Link to="/items" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                        <TbPokeball className="inline-block mr-2" /> Items
                     </Link>
                     <Link to="/pokemondle" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <TbPokeball className="inline-block mr-2" /> Pokemondle
                     </Link>
-                    <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                    {/* <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaEnvelope className="inline-block mr-2" /> Contact
-                    </Link>
+                    </Link> */}
                 </div>
 
                 {/* Bouton profil utilisateur */}
@@ -129,7 +132,7 @@ const Navbar = () => {
                             {userMenuOpen && (
                                 <div ref={userMenuRef} className="absolute right-0 mt-2 bg-gray-800 p-2 rounded shadow-lg w-48">
                                     <Link
-                                        to="/profile/edit"
+                                        to="/profile"
                                         className="block text-sm text-white hover:text-yellow-500 p-2"
                                     >
                                         <IoMdSettings className="inline-block mr-2" />
@@ -184,9 +187,9 @@ const Navbar = () => {
                     <Link to="/" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaHome className="inline-block mr-2" /> Home
                     </Link>
-                    <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                    {/* <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaInfoCircle className="inline-block mr-2" /> About
-                    </Link>
+                    </Link> */}
                     <Link to="/pokemons" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <TbPokeball className="inline-block mr-2" /> Pokémon
                     </Link>
@@ -194,9 +197,9 @@ const Navbar = () => {
                         Pokédle
                         <TbPokeball className="inline-block ml-2" />
                     </Link>
-                    <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
+                    {/* <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaEnvelope className="inline-block mr-2" /> Contact
-                    </Link>
+                    </Link> */}
                 </div>
             )}
         </nav>

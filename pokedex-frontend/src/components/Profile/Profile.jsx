@@ -85,10 +85,10 @@ const Profile = () => {
                     <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
                         {/* Photo de profil */}
                         <img
-    src={`http://localhost:8000${user.profile?.profile_picture}`}
-    alt={`${user.username}'s profile`}
-    className="w-full h-full object-cover"
-/>
+                            src={`http://localhost:8000${user.profile?.profile_picture}`}
+                            alt={`${user.username}'s profile`}
+                            className="w-full h-full object-cover"
+                        />
 
                     </div>
                     <div>
@@ -136,17 +136,11 @@ const Profile = () => {
                 {/* Boutons d'action */}
                 <div className="mt-6 flex space-x-4">
                     <Link
-                        to="/edit-profile"
+                        to="/profile/edit"  
                         className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200"
                     >
                         Edit Profile
                     </Link>
-                    <button
-                        onClick={() => alert("Feature coming soon!")}
-                        className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg"
-                    >
-                        Change Profile Picture
-                    </button>
                 </div>
             </div>
         </div>
