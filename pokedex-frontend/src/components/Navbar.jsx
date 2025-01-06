@@ -8,7 +8,6 @@ import { FiLogOut } from "react-icons/fi";
 import { AiOutlineTeam } from "react-icons/ai";
 import { FaRankingStar } from "react-icons/fa6";
 
-
 const Navbar = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -66,6 +65,14 @@ const Navbar = () => {
         };
     }, []);
 
+    // Vérification du token dans le localStorage
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        // Si aucun token, ne pas afficher la navbar
+        return null;
+    }
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -93,9 +100,6 @@ const Navbar = () => {
                     <Link to="/" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaHome className="inline-block mr-2" /> Home
                     </Link>
-                    {/* <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
-                        <FaInfoCircle className="inline-block mr-2" /> About
-                    </Link> */}
                     <Link to="/pokemons" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <TbPokeball className="inline-block mr-2" /> Pokémon
                     </Link>
@@ -105,9 +109,6 @@ const Navbar = () => {
                     <Link to="/pokemondle" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <TbPokeball className="inline-block mr-2" /> Pokemondle
                     </Link>
-                    {/* <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
-                        <FaEnvelope className="inline-block mr-2" /> Contact
-                    </Link> */}
                 </div>
 
                 {/* Bouton profil utilisateur */}
@@ -187,9 +188,6 @@ const Navbar = () => {
                     <Link to="/" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaHome className="inline-block mr-2" /> Home
                     </Link>
-                    {/* <Link to="/about" className="text-xl hover:text-yellow-500 transition-all duration-300">
-                        <FaInfoCircle className="inline-block mr-2" /> About
-                    </Link> */}
                     <Link to="/pokemons" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <TbPokeball className="inline-block mr-2" /> Pokémon
                     </Link>
@@ -197,9 +195,6 @@ const Navbar = () => {
                         Pokédle
                         <TbPokeball className="inline-block ml-2" />
                     </Link>
-                    {/* <Link to="/contact" className="text-xl hover:text-yellow-500 transition-all duration-300">
-                        <FaEnvelope className="inline-block mr-2" /> Contact
-                    </Link> */}
                 </div>
             )}
         </nav>
