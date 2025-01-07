@@ -14,6 +14,8 @@ import ItemDetail from './components/Items/ItemDetail';
 import Profile from './components/Profile/Profile';
 import EditProfile from './components/Profile/EditProfile';
 import FeaturesIncoming from './components/FeatureIncoming';
+import Leaderboard from './components/Leaderboard';
+import ScoreManager from './components/ScoreManager';
 
 
 const App = () => {
@@ -84,7 +86,13 @@ const App = () => {
 
                 <Route path="/leaderboard" element={
                     <PrivateRoute>
-                        <FeaturesIncoming />
+                        <Leaderboard />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/score-manager" element={
+                    <PrivateRoute>
+                        <ScoreManager />
                     </PrivateRoute>
                 } />
 

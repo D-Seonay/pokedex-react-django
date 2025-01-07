@@ -5,7 +5,7 @@ from .models import Profile
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['score', 'favorite_pokemon']
+        fields = ['score', 'favorite_pokemon', 'user']  # Ajoutez 'user.username' au champ
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)

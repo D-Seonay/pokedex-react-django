@@ -103,7 +103,7 @@ const Profile = () => {
                 <div className="mt-8 text-sm space-y-4">
                     <p>
                         <span className="font-bold text-gray-300">Score:</span>{" "}
-                        {user.profile?.score || "Not available"}
+                        {user.profile.score}
                     </p>
                     <p>
                         <span className="font-bold text-gray-300">Favorite Pokémon:</span>{" "}
