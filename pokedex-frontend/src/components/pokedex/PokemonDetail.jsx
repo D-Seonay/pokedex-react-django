@@ -67,19 +67,6 @@ const PokemonDetail = () => {
         return pokemon.sprite;
     };
 
-    const navigateToNextPokemon = () => {
-        const nextId = parseInt(id) + 1;
-        if (nextId <= 151) {
-            window.location.href = `/pokemons/${nextId}`;
-        }
-    };
-
-    const navigateToPrevPokemon = () => {
-        const prevId = parseInt(id) - 1;
-        if (prevId >= 1) {
-            window.location.href = `/pokemons/${prevId}`;
-        }
-    };
 
     return (
         <div className="min-h-screen bg-gray-900 text-white font-sans p-6">
@@ -91,23 +78,21 @@ const PokemonDetail = () => {
                     </Link>
                     <h1 className="text-xl font-bold">{`#${pokemon.number.toString().padStart(3, '0')}`}</h1>
                 </div>
-
-                {/* Navigation des Pokémon */}
-                <div className="flex justify-between mb-6">
-                    <button
-                        onClick={navigateToPrevPokemon}
-                        className="p-2 rounded-md text-white hover:bg-gray-700"
-                        disabled={parseInt(id) <= 1} // Désactiver bouton "Précédent" si id <= 1
-                    >
-                        <FaArrowLeft />
-                    </button>
-                    <button
-                        onClick={navigateToNextPokemon}
-                        className="p-2 rounded-md text-white hover:bg-gray-700"
-                        disabled={parseInt(id) >= 151} // Désactiver bouton "Suivant" si id >= 151
-                    >
+                    <div className="flex justify-between mb-6">
+                        <Link
+                            to={`/pokemons/${parseInt(id) - 1}`}
+                            className={`p-2 rounded-md text-white ${parseInt(id) <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'}`}
+                            onClick={(e) => parseInt(id) <= 1 && e.preventDefault()} // Désactiver bouton "Précédent" si id <= 1
+                        >
+                            <FaArrowLeft />
+                        </Link>
+                        <Link
+                            to={`/pokemons/${parseInt(id) + 1}`}
+                            className={`p-2 rounded-md text-white ${parseInt(id) >= 151 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'}`}
+                            onClick={(e) => parseInt(id) >= 151 && e.preventDefault()} // Désactiver bouton "Suivant" si id >= 151
+                        >
                         <FaArrowRight />
-                    </button>
+                    </Link>
                 </div>
 
                 {/* Sprite avec effet blur */}
