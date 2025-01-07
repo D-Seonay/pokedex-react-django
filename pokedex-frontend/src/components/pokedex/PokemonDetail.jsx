@@ -271,10 +271,10 @@ const PokemonDetail = () => {
                             {pokemon.evolutions && pokemon.evolutions.length > 0 ? (
                                 <div className="space-y-4 flex flex-col">
                                     {pokemon.evolutions.map((evolution, index) => {
-                                        const isActive = location.pathname === `/${evolution.id}`;
+                                        const isActive = location.pathname === `/pokemons/${evolution.id}`;
                                         return (
                                             <Link 
-                                                to={`/${evolution.id}`} 
+                                                to={`/pokemons/${evolution.id}`} 
                                                 key={index} 
                                                 className={`flex items-center space-x-4 min-w-max ${isActive ? 'bg-gray-900' : 'bg-gray-700'} p-2 rounded-md hover:bg-gray-600`}
                                             >
