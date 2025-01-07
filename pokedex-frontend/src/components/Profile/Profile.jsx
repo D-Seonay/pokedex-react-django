@@ -28,8 +28,6 @@ const Profile = () => {
                 });
 
                 const userData = response.data;
-                console.log("User data:", userData);
-                console.log("Profile data:", userData.profile);
                 setUser(userData);
 
                 // Récupérer le sprite du Pokémon favori
@@ -85,13 +83,16 @@ const Profile = () => {
                 {/* Header */}
                 <div className="flex items-center space-x-6">
                     <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
-                        {/* Photo de profil */}
+                        {/* Photo de profil ou image par défaut */}
                         <img
-                            src={`http://localhost:8000${user.profile?.profile_picture}`}
+                            src={
+                                user.profile?.profile_picture
+                                    ? `http://localhost:8000${user.profile.profile_picture}`
+                                    : "https://via.placeholder.com/96?text=No+Image"
+                            }
                             alt={`${user.username}'s profile`}
                             className="w-full h-full object-cover"
                         />
-
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold">{user.username}'s Profile</h1>
@@ -138,7 +139,7 @@ const Profile = () => {
                 {/* Boutons d'action */}
                 <div className="mt-6 flex space-x-4">
                     <Link
-                        to="/profile/edit"  
+                        to="/profile/edit"
                         className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200"
                     >
                         Edit Profile

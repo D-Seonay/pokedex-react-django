@@ -120,11 +120,15 @@ const Navbar = () => {
                                 className="flex items-center space-x-2"
                             >
                                 <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-700">
-                                    <img
-                                        src={`http://localhost:8000${user.profile?.profile_picture}`}
-                                        alt={`${user.username}'s profile`}
-                                        className="w-full h-full object-cover"
-                                    />
+                                <img
+                                    src={
+                                        user.profile?.profile_picture
+                                            ? `http://localhost:8000${user.profile.profile_picture}`
+                                            : "https://via.placeholder.com/96?text=No+Image"
+                                    }
+                                    alt={`${user.username}'s profile`}
+                                    className="w-full h-full object-cover"
+                                />
                                 </div>
                                 <span>{user.username}</span>
                             </button>
