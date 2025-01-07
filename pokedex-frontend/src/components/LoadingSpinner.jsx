@@ -15,8 +15,6 @@ const LoadingSpinner = () => {
                 >
                     <TbPokeball className="text-red-500 text-6xl" />
                 </div>
-                {/* Texte */}
-                <p className="mt-4 text-white text-lg font-medium">Loading...</p>
             </div>
 
             {/* Ajout de l'animation keyframes directement dans le composant */}
