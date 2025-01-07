@@ -29,6 +29,8 @@ const Profile = () => {
                 });
 
                 const userData = response.data;
+                console.log("User data:", userData);
+                console.log("Profile data:", userData.profile);
                 setUser(userData);
 
                 // Récupérer le sprite du Pokémon favori
