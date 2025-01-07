@@ -16,6 +16,7 @@ import EditProfile from './components/Profile/EditProfile';
 import FeaturesIncoming from './components/FeatureIncoming';
 import Leaderboard from './components/Leaderboard';
 import ScoreManager from './components/ScoreManager';
+import Error404 from './components/errors/Error404';
 
 
 const App = () => {
@@ -98,6 +99,7 @@ const App = () => {
 
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="*" element={<Error404 />} />
             </Routes>
             <PrivateRoute>
                 <Footer />
