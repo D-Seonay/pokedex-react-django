@@ -8,14 +8,14 @@ const Error404 = () => {
             {/* Titre de la page */}
             <h1 className="text-6xl font-bold mb-4 text-red-500">404</h1>
             <h2 className="text-2xl font-medium mb-6 text-gray-300">
-                Accès refusé ! <span className="text-yellow-500">Romflex</span> bloque la route !
+                Accès refusé ! <span className="text-yellow-500">Ronflex</span> bloque la route !
             </h2>
 
             {/* Illustration avec un message humoristique */}
             <div className="flex flex-col items-center">
                 <TbBarrierBlock className="text-7xl text-yellow-500 mb-4 animate-bounce" />
                 <p className="text-lg text-gray-400 text-center max-w-md">
-                    "C'est pas que je veux pas... mais si tu veux passer, il faudra un meilleur chemin !"
+                    "C'est pas que je veux pas... mais si tu veux passer, il faudra un meilleur chemin ou avoir la pokéflûte !"
                 </p>
             </div>
 
@@ -29,7 +29,7 @@ const Error404 = () => {
 
             {/* Citation humoristique */}
             <footer className="mt-6 text-gray-500 text-sm italic">
-                "By the mighty will of Romflex, cette page n'existe pas !" 
+                "By the mighty will of Snorlax, cette page n'existe pas !" 
             </footer>
         </div>
     );
