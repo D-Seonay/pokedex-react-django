@@ -108,7 +108,7 @@ const ItemList = () => {
                     </select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
                     {filteredItems.map((item) => (
                         <div
                             key={item.id}
