@@ -9,27 +9,37 @@ const TypeEffectivenessTable = () => {
     useEffect(() => {
         const fetchTypeData = async () => {
             try {
-                // Récupérer la liste des types
                 const response = await axios.get("https://pokeapi.co/api/v2/type/");
-                const allTypes = response.data.results.map(type => type.name);
+                const allTypes = response.data.results;
 
-                // Filtrer les types pour exclure "shadow" et "unknown"
-                const filteredTypes = allTypes.filter(type => type !== "stellar" && type !== "unknown");
+                const filteredTypes = allTypes.filter(
+                    (type) => type.name !== "stellar" && type.name !== "unknown"
+                );
 
-                // Récupérer les relations de dégâts pour chaque type filtré
                 const damageData = {};
-                for (const typeName of filteredTypes) {
-                    const typeResponse = await axios.get(`https://pokeapi.co/api/v2/type/${typeName}`);
+                const typesWithId = [];
+
+                for (const type of filteredTypes) {
+                    const typeResponse = await axios.get(type.url);
                     const relations = typeResponse.data.damage_relations;
 
-                    damageData[typeName] = {
-                        double: relations.double_damage_to.map(t => t.name),
-                        half: relations.half_damage_to.map(t => t.name),
-                        none: relations.no_damage_to.map(t => t.name),
+                    damageData[type.name] = {
+                        id: typeResponse.data.id,
+                        double: relations.double_damage_to.map((t) => t.name),
+                        half: relations.half_damage_to.map((t) => t.name),
+                        none: relations.no_damage_to.map((t) => t.name),
+                        sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-viii/legends-arceus/${typeResponse.data.id}.png`,
                     };
+
+                    typesWithId.push({
+                        name: type.name,
+                        id: typeResponse.data.id,
+                    });
                 }
 
-                setTypes(filteredTypes);
+                typesWithId.sort((a, b) => a.id - b.id);
+
+                setTypes(typesWithId);
                 setDamageMatrix(damageData);
                 setLoading(false);
             } catch (error) {
@@ -45,7 +55,7 @@ const TypeEffectivenessTable = () => {
         if (damageMatrix[attackType]?.double.includes(defenseType)) return 2;
         if (damageMatrix[attackType]?.half.includes(defenseType)) return 0.5;
         if (damageMatrix[attackType]?.none.includes(defenseType)) return 0;
-        return 1; // Par défaut
+        return 1;
     };
 
     if (loading) {
@@ -53,41 +63,53 @@ const TypeEffectivenessTable = () => {
     }
 
     return (
-        <div className="overflow-x-auto">
-            <table className="table-auto border-collapse border border-gray-700 w-full text-sm text-center text-white">
+        <div className="overflow-x-auto w-full h-full bg-gray-900 p-3">
+            <table className="table-auto border-collapse border border-gray-700 text-xs sm:text-sm text-center text-white bg-gray-900 rounded-lg w-full">
                 <thead>
                     <tr>
-                        <th className="border border-gray-700 bg-gray-800 px-4 py-2">Defense ↓ / Attack →</th>
-                        {types.map(type => (
+                        <th className="border border-gray-700 bg-gray-800 px-2 sm:px-4 py-2">
+                            Defense ↓ / Attack →
+                        </th>
+                        {types.map((type) => (
                             <th
-                                key={type}
-                                className="border border-gray-700 bg-gray-800 px-4 py-2 capitalize"
+                                key={type.name}
+                                className="border border-gray-700 bg-gray-800 px-1 sm:px-1 py-2"
                             >
-                                {type}
+                                <div className="flex flex-col items-center">
+                                    <img
+                                        src={damageMatrix[type.name]?.sprite}
+                                        alt={type.name}
+                                    />
+                                </div>
                             </th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {types.map(defenseType => (
-                        <tr key={defenseType}>
-                            <td className="border border-gray-700 bg-gray-800 px-4 py-2 capitalize">
-                                {defenseType}
+                    {types.map((defenseType) => (
+                        <tr key={defenseType.name}>
+                            <td className="border border-gray-700 bg-gray-800 px-2 sm:px-4 py-2">
+                                <div className="flex flex-col items-center">
+                                    <img
+                                        src={damageMatrix[defenseType.name]?.sprite}
+                                        alt={defenseType.name}
+                                    />
+                                </div>
                             </td>
-                            {types.map(attackType => (
+                            {types.map((attackType) => (
                                 <td
-                                    key={`${defenseType}-${attackType}`}
-                                    className={`border border-gray-700 px-4 py-2 ${
-                                        getDamageMultiplier(attackType, defenseType) === 2
+                                    key={`${defenseType.name}-${attackType.name}`}
+                                    className={`border border-gray-700 px-2 sm:px-4 py-2 ${
+                                        getDamageMultiplier(attackType.name, defenseType.name) === 2
                                             ? "bg-red-500"
-                                            : getDamageMultiplier(attackType, defenseType) === 0.5
+                                            : getDamageMultiplier(attackType.name, defenseType.name) === 0.5
                                             ? "bg-blue-500"
-                                            : getDamageMultiplier(attackType, defenseType) === 0
+                                            : getDamageMultiplier(attackType.name, defenseType.name) === 0
                                             ? "bg-gray-500"
                                             : "bg-green-500"
                                     }`}
                                 >
-                                    {getDamageMultiplier(attackType, defenseType)}
+                                    {getDamageMultiplier(attackType.name, defenseType.name)}
                                 </td>
                             ))}
                         </tr>
