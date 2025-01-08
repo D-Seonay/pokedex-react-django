@@ -17,6 +17,7 @@ import FeaturesIncoming from './components/FeatureIncoming';
 import Leaderboard from './components/Leaderboard';
 import ScoreManager from './components/ScoreManager';
 import Error404 from './components/errors/Error404';
+import TypeEffectivenessTable from './components/TypeEffectivenessTable';
 
 
 const App = () => {
@@ -94,6 +95,12 @@ const App = () => {
                 <Route path="/score-manager" element={
                     <PrivateRoute>
                         <ScoreManager />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/type-effectiveness" element={
+                    <PrivateRoute>
+                        <TypeEffectivenessTable />
                     </PrivateRoute>
                 } />
 
