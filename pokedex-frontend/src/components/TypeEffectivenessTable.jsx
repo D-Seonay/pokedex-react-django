@@ -1,96 +1,101 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const TypeEffectivenessTable = () => {
     const [types, setTypes] = useState([]);
+    const [damageMatrix, setDamageMatrix] = useState({});
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchTypes = async () => {
+        const fetchTypeData = async () => {
             try {
-                const response = await axios.get("https://pokeapi.co/api/v2/type");
-                const typeData = response.data.results;
+                // Récupérer la liste des types
+                const response = await axios.get("https://pokeapi.co/api/v2/type/");
+                const allTypes = response.data.results.map(type => type.name);
 
-                const detailedTypes = await Promise.all(
-                    typeData.map(async (type) => {
-                        const typeResponse = await axios.get(type.url);
-                        return {
-                            name: type.name,
-                            damageRelations: typeResponse.data.damage_relations,
-                        };
-                    })
-                );
+                // Filtrer les types pour exclure "shadow" et "unknown"
+                const filteredTypes = allTypes.filter(type => type !== "stellar" && type !== "unknown");
 
-                setTypes(detailedTypes);
+                // Récupérer les relations de dégâts pour chaque type filtré
+                const damageData = {};
+                for (const typeName of filteredTypes) {
+                    const typeResponse = await axios.get(`https://pokeapi.co/api/v2/type/${typeName}`);
+                    const relations = typeResponse.data.damage_relations;
+
+                    damageData[typeName] = {
+                        double: relations.double_damage_to.map(t => t.name),
+                        half: relations.half_damage_to.map(t => t.name),
+                        none: relations.no_damage_to.map(t => t.name),
+                    };
+                }
+
+                setTypes(filteredTypes);
+                setDamageMatrix(damageData);
                 setLoading(false);
-            } catch (err) {
-                console.error("Error fetching types:", err);
-                setError("Failed to fetch type data.");
+            } catch (error) {
+                console.error("Failed to fetch type data:", error);
                 setLoading(false);
             }
         };
 
-        fetchTypes();
+        fetchTypeData();
     }, []);
 
-    if (loading) {
-        return <p className="text-center text-gray-500">Loading...</p>;
-    }
+    const getDamageMultiplier = (attackType, defenseType) => {
+        if (damageMatrix[attackType]?.double.includes(defenseType)) return 2;
+        if (damageMatrix[attackType]?.half.includes(defenseType)) return 0.5;
+        if (damageMatrix[attackType]?.none.includes(defenseType)) return 0;
+        return 1; // Par défaut
+    };
 
-    if (error) {
-        return <p className="text-center text-red-500">{error}</p>;
+    if (loading) {
+        return <div className="text-center text-white">Loading Type Chart...</div>;
     }
 
     return (
-        <div className="p-6 bg-gray-900 text-white min-h-screen">
-            <h1 className="text-2xl font-bold mb-4 text-center">Type Effectiveness Table</h1>
-
-            <div className="overflow-x-auto">
-                <table className="table-auto border-collapse border border-gray-700 w-full text-sm">
-                    <thead>
-                        <tr>
-                            <th className="border border-gray-700 px-4 py-2">Type</th>
-                            <th className="border border-gray-700 px-4 py-2">Double Damage To</th>
-                            <th className="border border-gray-700 px-4 py-2">Half Damage To</th>
-                            <th className="border border-gray-700 px-4 py-2">No Damage To</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {types.map((type) => (
-                            <tr key={type.name} className="odd:bg-gray-800 even:bg-gray-700">
-                                <td className="border border-gray-700 px-4 py-2 capitalize font-bold">
-                                    {type.name}
-                                </td>
-                                <td className="border border-gray-700 px-4 py-2">
-                                    {type.damageRelations.double_damage_to.length > 0
-                                        ? type.damageRelations.double_damage_to
-                                              .map((t) => t.name)
-                                              .join(", ")
-                                        : "None"}
-                                </td>
-                                <td className="border border-gray-700 px-4 py-2">
-                                    {type.damageRelations.half_damage_to.length > 0
-                                        ? type.damageRelations.half_damage_to
-                                              .map((t) => t.name)
-                                              .join(", ")
-                                        : "None"}
-                                </td>
-                                <td className="border border-gray-700 px-4 py-2">
-                                    {type.damageRelations.no_damage_to.length > 0
-                                        ? type.damageRelations.no_damage_to
-                                              .map((t) => t.name)
-                                              .join(", ")
-                                        : "None"}
-                                </td>
-                            </tr>
+        <div className="overflow-x-auto">
+            <table className="table-auto border-collapse border border-gray-700 w-full text-sm text-center text-white">
+                <thead>
+                    <tr>
+                        <th className="border border-gray-700 bg-gray-800 px-4 py-2">Defense ↓ / Attack →</th>
+                        {types.map(type => (
+                            <th
+                                key={type}
+                                className="border border-gray-700 bg-gray-800 px-4 py-2 capitalize"
+                            >
+                                {type}
+                            </th>
                         ))}
-                    </tbody>
-                </table>
-            </div>
+                    </tr>
+                </thead>
+                <tbody>
+                    {types.map(defenseType => (
+                        <tr key={defenseType}>
+                            <td className="border border-gray-700 bg-gray-800 px-4 py-2 capitalize">
+                                {defenseType}
+                            </td>
+                            {types.map(attackType => (
+                                <td
+                                    key={`${defenseType}-${attackType}`}
+                                    className={`border border-gray-700 px-4 py-2 ${
+                                        getDamageMultiplier(attackType, defenseType) === 2
+                                            ? "bg-red-500"
+                                            : getDamageMultiplier(attackType, defenseType) === 0.5
+                                            ? "bg-blue-500"
+                                            : getDamageMultiplier(attackType, defenseType) === 0
+                                            ? "bg-gray-500"
+                                            : "bg-green-500"
+                                    }`}
+                                >
+                                    {getDamageMultiplier(attackType, defenseType)}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
 
 export default TypeEffectivenessTable;
-    
