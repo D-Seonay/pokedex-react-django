@@ -55,6 +55,32 @@ const Register = () => {
                 <div className="absolute bg-gradient-to-r from-pink-500 to-purple-800 opacity-20 rounded-full w-[500px] h-[500px] blur-2xl bottom-[-150px] right-[-150px]" />
             </div>
 
+            {/* Animation des étoiles */}
+            <div className="absolute inset-0 overflow-hidden z-0">
+                {[...Array(50)].map((_, index) => (
+                    <motion.div
+                        key={index}
+                        className="absolute bg-white rounded-full"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{
+                            opacity: [0, 0.8, 0],
+                            scale: [0.5, 1, 0.5],
+                        }}
+                        transition={{
+                            duration: Math.random() * 3 + 2,
+                            repeat: Infinity,
+                            delay: Math.random() * 5,
+                        }}
+                        style={{
+                            width: `${Math.random() * 3 + 2}px`,
+                            height: `${Math.random() * 3 + 2}px`,
+                            top: `${Math.random() * 100}%`,
+                            left: `${Math.random() * 100}%`,
+                        }}
+                    />
+                ))}
+            </div>
+
             {/* Carte flottante avec animation */}
             <motion.div
                 className="relative bg-black/60 backdrop-blur-lg p-8 rounded-2xl shadow-2xl max-w-md w-full border border-gray-700 z-10"
