@@ -3,9 +3,6 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../LoadingSpinner";
 import FloatingCard from "../ux/FloatingCard";
-import AnimatedButton from "../ux/AnimatedButton";
-import AnimatedLink from "../ux/AnimatedLink";
-import GlowButton from "../ux/GlowButton";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -140,7 +137,6 @@ const Profile = () => {
                         )}
                     </ul>
                 </div>
-                <GlowButton>Buttonnn</GlowButton>
                 {/* <div className="mt-6 flex space-x-4"> */}
                     <Link
                         to="/profile/edit"
