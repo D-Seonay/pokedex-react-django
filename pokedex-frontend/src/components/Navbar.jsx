@@ -79,7 +79,7 @@ const Navbar = () => {
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return null;
     }
 
     const handleLogout = () => {

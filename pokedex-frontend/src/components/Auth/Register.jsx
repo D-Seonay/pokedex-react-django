@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { IoEyeSharp } from "react-icons/io5";
 import { HiEyeSlash } from "react-icons/hi2";
+import FloatingCard from "../ux/FloatingCard";
+import StarsBg from "../ux/StarsBg";
 
 
 
@@ -51,45 +53,9 @@ const Register = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white relative overflow-hidden">
-            {/* Arrière-plan étoiles */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute bg-gradient-to-r from-blue-700 via-purple-900 to-black opacity-30 rounded-full w-[600px] h-[600px] blur-3xl top-[-200px] left-[-200px]" />
-                <div className="absolute bg-gradient-to-r from-pink-500 to-purple-800 opacity-20 rounded-full w-[500px] h-[500px] blur-2xl bottom-[-150px] right-[-150px]" />
-            </div>
 
-            {/* Animation des étoiles */}
-            <div className="absolute inset-0 overflow-hidden z-0">
-                {[...Array(50)].map((_, index) => (
-                    <motion.div
-                        key={index}
-                        className="absolute bg-white rounded-full"
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{
-                            opacity: [0, 0.8, 0],
-                            scale: [0.5, 1, 0.5],
-                        }}
-                        transition={{
-                            duration: Math.random() * 3 + 2,
-                            repeat: Infinity,
-                            delay: Math.random() * 5,
-                        }}
-                        style={{
-                            width: `${Math.random() * 3 + 2}px`,
-                            height: `${Math.random() * 3 + 2}px`,
-                            top: `${Math.random() * 100}%`,
-                            left: `${Math.random() * 100}%`,
-                        }}
-                    />
-                ))}
-            </div>
-
-            {/* Carte flottante avec animation */}
-            <motion.div
-                className="relative bg-black/60 backdrop-blur-lg p-8 rounded-2xl shadow-2xl max-w-md w-full border border-gray-700 z-10"
-                initial={{ y: -50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1 }}
-            >
+            <StarsBg />
+            <FloatingCard>
                 <h2 className="text-3xl font-bold mb-6 text-center text-white">
                     Register
                 </h2>
@@ -185,7 +151,7 @@ const Register = () => {
                         Login
                     </Link>
                 </p>
-            </motion.div>
+            </FloatingCard>
 
             {/* Pied de page */}
             <div className="absolute bottom-4 text-center w-full text-gray-500 text-sm z-10">

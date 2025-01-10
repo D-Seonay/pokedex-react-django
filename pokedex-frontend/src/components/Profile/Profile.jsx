@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../LoadingSpinner";
+import FloatingCard from "../ux/FloatingCard";
+import AnimatedButton from "../ux/AnimatedButton";
+import AnimatedLink from "../ux/AnimatedLink";
+import GlowButton from "../ux/GlowButton";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -70,8 +74,9 @@ const Profile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-md p-8">
+        <div className="min-h-screen text-white p-6 flex items-center justify-center"> 
+            <FloatingCard className="max-w-4xl mx-auto rounded-lg shadow-md p-4">
+            <div className="max-w-4xl mx-auto rounded-lg shadow-md p-8">
                 {/* Bouton Retour */}
                 <button
                     onClick={() => navigate(-1)}
@@ -82,7 +87,7 @@ const Profile = () => {
 
                 {/* Header */}
                 <div className="flex items-center space-x-6">
-                    <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+                    <div className="rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
                         {/* Photo de profil ou image par défaut */}
                         <img
                             src={
@@ -135,17 +140,17 @@ const Profile = () => {
                         )}
                     </ul>
                 </div>
-
-                {/* Boutons d'action */}
-                <div className="mt-6 flex space-x-4">
+                <GlowButton>Buttonnn</GlowButton>
+                {/* <div className="mt-6 flex space-x-4"> */}
                     <Link
                         to="/profile/edit"
                         className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200"
                     >
                         Edit Profile
                     </Link>
-                </div>
+                {/* </div> */}
             </div>
+            </FloatingCard>
         </div>
     );
 };

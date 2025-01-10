@@ -10,8 +10,9 @@ const Footer = () => {
     return null;
   }
 
+
   return (
-    <footer className="bg-gray-900 text-white py-6">
+    <footer className="text-white py-6">
       <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row justify-between items-center">
         {/* Section des liens */}
         <div className="flex flex-col sm:flex-row space-x-0 sm:space-x-6 mb-4 sm:mb-0">

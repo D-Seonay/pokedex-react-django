@@ -18,102 +18,40 @@ import Leaderboard from './components/Leaderboard';
 import ScoreManager from './components/ScoreManager';
 import Error404 from './components/errors/Error404';
 import TypeEffectivenessTable from './components/TypeEffectivenessTable';
+import StarsBg from './components/ux/StarsBg';
+
+const Layout = ({ children }) => (
+    <div className="relative min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white">
+        <StarsBg />
+        <Navbar />
+        <main className="relative z-10">{children}</main>
+        <Footer />
+    </div>
+);
 
 
 const App = () => {
     return (
-        <div className="bg-gray-900 text-white min-h-screen">
         <Router>
-            <PrivateRoute>
-                <Navbar />
-            </PrivateRoute>
             <Routes>
-
-                <Route path="/" element={
-                    <PrivateRoute>
-                        <Home />
-                    </PrivateRoute>
-                } />
-                <Route path="/pokemons" element={
-                    <PrivateRoute>
-                        <PokemonList />
-                    </PrivateRoute>
-                } />
-                <Route path="/pokemons/:id" element={
-                    <PrivateRoute>
-                        <PokemonDetail />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/items" element={
-                    <PrivateRoute>
-                        <ItemList />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/items/:id" element={
-                    <PrivateRoute>
-                        <ItemDetail />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/pokemondle" element={
-                    <PrivateRoute>
-                        <Pokemondle />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/profile" element={
-                    <PrivateRoute>
-                        <Profile />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/profile/edit" element={
-                    <PrivateRoute>
-                        <EditProfile />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/features-incoming" element={
-                    <PrivateRoute>
-                        <FeaturesIncoming />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/teams" element={
-                    <PrivateRoute>
-                        <FeaturesIncoming />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/leaderboard" element={
-                    <PrivateRoute>
-                        <Leaderboard />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/score-manager" element={
-                    <PrivateRoute>
-                        <ScoreManager />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/type-effectiveness" element={
-                    <PrivateRoute>
-                        <TypeEffectivenessTable />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="*" element={<Error404 />} />
+                <Route path="/" element={<Layout><PrivateRoute><Home /></PrivateRoute></Layout>} />
+                <Route path="/pokemons" element={<Layout><PrivateRoute><PokemonList /></PrivateRoute></Layout>} />
+                <Route path="/pokemons/:id" element={<Layout><PrivateRoute><PokemonDetail /></PrivateRoute></Layout>} />
+                <Route path="/items" element={<Layout><PrivateRoute><ItemList /></PrivateRoute></Layout>} />
+                <Route path="/items/:id" element={<Layout><PrivateRoute><ItemDetail /></PrivateRoute></Layout>} />
+                <Route path="/pokemondle" element={<Layout><PrivateRoute><Pokemondle /></PrivateRoute></Layout>} />
+                <Route path="/profile" element={<Layout><PrivateRoute><Profile /></PrivateRoute></Layout>} />
+                <Route path="/profile/edit" element={<Layout><PrivateRoute><EditProfile /></PrivateRoute></Layout>} />
+                <Route path="/features-incoming" element={<Layout><PrivateRoute><FeaturesIncoming /></PrivateRoute></Layout>} />
+                <Route path="/teams" element={<Layout><PrivateRoute><FeaturesIncoming /></PrivateRoute></Layout>} />
+                <Route path="/leaderboard" element={<Layout><PrivateRoute><Leaderboard /></PrivateRoute></Layout>} />
+                <Route path="/score-manager" element={<Layout><PrivateRoute><ScoreManager /></PrivateRoute></Layout>} />
+                <Route path="/type-effectiveness" element={<Layout><PrivateRoute><TypeEffectivenessTable /></PrivateRoute></Layout>} />
+                <Route path="/register" element={<Layout><Register /></Layout>} />
+                <Route path="/login" element={<Layout><Login /></Layout>} />
+                <Route path="*" element={<Layout><Error404 /></Layout>} />
             </Routes>
-            <PrivateRoute>
-                <Footer />
-            </PrivateRoute>
         </Router>
-        </div>
     );
 };
 

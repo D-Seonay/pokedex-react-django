@@ -3,6 +3,7 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { FaCircle, FaStar, FaRegPlayCircle, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import StarsBg from '../ux/StarsBg';
 
 const PokemonDetail = () => {
     const { id } = useParams();
@@ -69,8 +70,13 @@ const PokemonDetail = () => {
 
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white font-sans p-6">
-            <div className="max-w-lg mx-auto bg-gray-800 rounded-lg shadow-md p-6">
+        <div className=" flex justify-center text-white relative overflow-hidden">
+            <motion.div
+                className="relative bg-black/20 backdrop-blur-xl p-8 rounded-2xl shadow-2xl  border border-gray-700 z-10 max-w-md w-full"
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 1 }}
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                     <Link to="/pokemons" className="text-gray-400 hover:text-gray-200">
@@ -103,7 +109,7 @@ const PokemonDetail = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <div
-                        className="absolute inset-0 w-36 h-36 bg-gray-500 blur-xl rounded-full animate-pulse left-[150px]"
+                        className="absolute inset-0 w-36 h-36 bg-gray-500 blur-xl rounded-full animate-pulse left-[120px]"
                         animate={{
                             opacity: spriteType === 'shiny' ? 1 : 0,
                         }}
@@ -166,35 +172,35 @@ const PokemonDetail = () => {
                                 <span>Attack</span>
                                 <span>{pokemon.attack}</span>
                             </p>
-                            {renderStatBar(pokemon.attack, 'bg-red-500')}
+                            {renderStatBar(pokemon.attack, 'bg-gradient-to-r from-red-400 via-red-500 to-red-600')}
                         </div>
                         <div className="mb-4">
                             <p className="flex justify-between">
                                 <span>Defense</span>
                                 <span>{pokemon.defense}</span>
                             </p>
-                            {renderStatBar(pokemon.defense, 'bg-blue-500')}
+                            {renderStatBar(pokemon.defense, 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600')}
                         </div>
                         <div className="mb-4">
                             <p className="flex justify-between">
                                 <span>Sp. Atk</span>
                                 <span>{pokemon.special_attack}</span>
                             </p>
-                            {renderStatBar(pokemon.special_attack, 'bg-purple-500')}
+                            {renderStatBar(pokemon.special_attack, 'bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600')}
                         </div>
                         <div className="mb-4">
                             <p className="flex justify-between">
                                 <span>Sp. Def</span>
                                 <span>{pokemon.special_defense}</span>
                             </p>
-                            {renderStatBar(pokemon.special_defense, 'bg-green-500')}
+                            {renderStatBar(pokemon.special_defense, 'bg-gradient-to-r from-green-400 via-green-500 to-green-600')}
                         </div>
                         <div className="mb-4">
                             <p className="flex justify-between">
                                 <span>Speed</span>
                                 <span>{pokemon.speed}</span>
                             </p>
-                            {renderStatBar(pokemon.speed, 'bg-yellow-500')}
+                            {renderStatBar(pokemon.speed, 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600')}
                         </div>
                     </div>
                 )}
@@ -289,8 +295,8 @@ const PokemonDetail = () => {
                         </div>
                     )}
                 </div>
+                </motion.div>
             </div>
-        </div>
     );
 };
 

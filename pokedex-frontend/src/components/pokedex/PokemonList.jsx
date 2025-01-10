@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi'; // Icône de recherche
 import { FaCircle, FaStar } from 'react-icons/fa'; // Icônes de type et de mode shiny
+import FloatingCard from '../ux/FloatingCard';
+import StarsBg from '../ux/StarsBg';
 
 
 const PokemonList = () => {
@@ -32,7 +34,9 @@ const PokemonList = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white font-sans p-6">
+        <div className="min-h-screen text-white font-sans p-6 items-center justify-center bg-gradient-to-b from-gray-900 via-black to-gray-900 relative overflow-hidden">
+            <StarsBg />
+
             <h1 className="text-4xl font-bold text-center mb-10">Pokédex</h1>
 
             {/* Barre de recherche avec icône */}
