@@ -1,5 +1,4 @@
 # Pokédex React-Django
-epsi
 Un projet complet de Pokédex utilisant un frontend React et un backend Django, conteneurisés avec Docker pour une gestion simplifiée.
 
 ## Prérequis
