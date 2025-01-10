@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { IoEyeSharp } from "react-icons/io5";
+import { HiEyeSlash } from "react-icons/hi2";
+
 
 
 const Register = () => {
@@ -141,7 +143,7 @@ const Register = () => {
                                 className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-white focus:outline-none"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                {showPassword ? "🙈" : "👁️"}
+                                {showPassword ? <HiEyeSlash /> : <IoEyeSharp />}
                             </button>
                         </div>
                     </div>
@@ -161,10 +163,10 @@ const Register = () => {
                         />
                         <button
                             type="button"
-                            className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-white focus:outline-none"
+                            className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-blue-500 focus:outline-none"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
-                            {showConfirmPassword ? "🙈" : "👁️"}
+                            {showConfirmPassword ? <HiEyeSlash /> : <IoEyeSharp />}
                         </button>
                         </div>
 

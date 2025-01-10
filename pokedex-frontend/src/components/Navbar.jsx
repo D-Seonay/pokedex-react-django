@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaHome, FaInfoCircle, FaEnvelope } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import { TbPokeball } from "react-icons/tb";
 import { IoMdSettings } from "react-icons/io";
 import { FiLogOut } from "react-icons/fi";
 import { AiOutlineTeam } from "react-icons/ai";
 import { FaRankingStar } from "react-icons/fa6";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Navbar = () => {
     const [user, setUser] = useState(null);
@@ -74,7 +75,7 @@ const Navbar = () => {
     }
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     if (error) {
