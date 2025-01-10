@@ -3,6 +3,13 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return null;
+  }
+
   return (
     <footer className="bg-gray-900 text-white py-6">
       <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row justify-between items-center">
