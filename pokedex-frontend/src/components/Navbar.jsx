@@ -87,8 +87,8 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-gray-900 text-white p-4">
-            <div className="max-w-screen-xl mx-auto flex justify-between items-center">
+        <nav className=" text-white p-4 sticky top-0 z-50">
+            <div className=" mx-auto flex justify-around items-center">
                 {/* Logo avec SVG Pokéball */}
                 <Link to="/" className="text-2xl font-bold text-yellow-500 flex items-center space-x-2">
                     <TbPokeball className="h-8 w-8 text-yellow-500" />
@@ -96,7 +96,7 @@ const Navbar = () => {
                 </Link>
 
                 {/* Icônes de navigation - menu normal */}
-                <div className="hidden md:flex space-x-6">
+                <div className="hidden md:flex space-x-6 backdrop-blur-md bg-gray-800 bg-opacity-50 py-4 px-10 rounded-full">
                     <Link to="/" className="text-xl hover:text-yellow-500 transition-all duration-300">
                         <FaHome className="inline-block mr-2" /> Home
                     </Link>

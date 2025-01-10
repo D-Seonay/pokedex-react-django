@@ -22,6 +22,7 @@ import TypeEffectivenessTable from './components/TypeEffectivenessTable';
 
 const App = () => {
     return (
+        <div className="bg-gray-900 text-white min-h-screen">
         <Router>
             <PrivateRoute>
                 <Navbar />
@@ -112,6 +113,7 @@ const App = () => {
                 <Footer />
             </PrivateRoute>
         </Router>
+        </div>
     );
 };
 
